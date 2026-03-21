@@ -2288,9 +2288,9 @@ function renderProdTable() {
           + stockBadge + codBadge + repBadge
           + '</div>'
           + '<div style="display:flex;gap:5px;">'
-          + '<button onclick="editProd(' + p.id + ')" style="flex:1;background:#eff6ff;color:#2563eb;border:none;padding:7px 0;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">✏️ Edit</button>'
+          + '<button onclick="editProd(\'' + p.id + '\')" style="flex:1;background:#eff6ff;color:#2563eb;border:none;padding:7px 0;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">✏️ Edit</button>'
           + '<button onclick="quickStock(\'' + p.id + '\')" style="background:#f0fdf4;color:#16a34a;border:none;padding:7px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;" title="Update Stock">📦 ' + (p.stock != null ? p.stock : '∞') + '</button>'
-          + '<button onclick="delProd(' + p.id + ')" style="background:#fef2f2;color:#dc2626;border:none;padding:7px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">🗑</button>'
+          + '<button onclick="delProd(\'' + p.id + '\')" style="background:#fef2f2;color:#dc2626;border:none;padding:7px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">🗑</button>'
           + '</div>'
           + '</div></div>';
       }).join('');
@@ -2460,18 +2460,26 @@ function openProdModal(id) {
   id = (id !== undefined && id !== null) ? String(id) : null;
   tempImgs = [];
 
-  var fields = ['imgGrid','prodImgUrls','driveLoadStatus','folderHelp',
-                'prodName','prodPrice','prodMRP','prodDesc','prodColors',
-                'prodFabric','prodFit','prodStock','aiKeywords','editId'];
-  fields.forEach(function(fid) {
+  // Clear all text fields
+  ['prodImgUrls','prodName','prodPrice','prodMRP','prodDesc',
+   'prodColors','prodFabric','prodFit','prodStock','aiKeywords','editId'].forEach(function(fid) {
     var el = document.getElementById(fid);
-    if (!el) return;
-    if (fid === 'imgGrid' || fid === 'folderHelp') { el.innerHTML = ''; if(el.classList) el.classList.add('hidden'); }
-    else if (fid === 'driveLoadStatus') { el.textContent = ''; if(el.classList) el.classList.add('hidden'); }
-    else el.value = '';
+    if (el) el.value = '';
   });
 
-  // Reset toggles to ON by default
+  // Clear image grid
+  var imgGridEl = document.getElementById('imgGrid');
+  if (imgGridEl) { imgGridEl.innerHTML = ''; imgGridEl.style.display = 'none'; }
+  var imgCount = document.getElementById('imgGridCount');
+  if (imgCount) imgCount.textContent = '';
+
+  // Reset dropdowns
+  var catEl   = document.getElementById('prodCategory');
+  var badgeEl = document.getElementById('prodBadge');
+  if (catEl)   catEl.value   = '';
+  if (badgeEl) badgeEl.value = '';
+
+  // Reset toggles to ON
   setToggle('prodCOD',         '#16a34a', true);
   setToggle('prodReplacement', '#d97706', true);
 
@@ -2486,28 +2494,31 @@ function openProdModal(id) {
   if (id) {
     var p = products.find(function(x){ return String(x.id) === id; });
     if (!p) { showToast('Product not found!'); return; }
+
     document.getElementById('prodName').value   = p.name   || '';
     document.getElementById('prodPrice').value  = p.price  || '';
-    var mrpEl = document.getElementById('prodMRP');
-    if (mrpEl) mrpEl.value = p.mrp || '';
     document.getElementById('prodDesc').value   = p.desc   || '';
     document.getElementById('prodColors').value = p.colors ? p.colors.join(', ') : '';
+
+    var mrpEl    = document.getElementById('prodMRP');
     var fabricEl = document.getElementById('prodFabric');
+    var fitEl    = document.getElementById('prodFit');
+    var stockEl  = document.getElementById('prodStock');
+    if (mrpEl)    mrpEl.value    = p.mrp    || '';
     if (fabricEl) fabricEl.value = p.fabric || '';
-    var fitEl = document.getElementById('prodFit');
-    if (fitEl) fitEl.value = p.fit || '';
-    var stockEl = document.getElementById('prodStock');
-    if (stockEl) stockEl.value = p.stock != null ? p.stock : '';
-    if (catEl) catEl.value = p.category || '';
-    if (badgeEl) badgeEl.value = p.badge || '';
+    if (fitEl)    fitEl.value    = p.fit    || '';
+    if (stockEl)  stockEl.value  = (p.stock != null) ? p.stock : '';
+    if (catEl)    catEl.value    = p.category || '';
+    if (badgeEl)  badgeEl.value  = p.badge    || '';
+
     var codVal = !(p.cod === false || p.cod === 'no' || p.cod === 'false');
     var repVal = !(p.replacement === false || p.replacement === 'no' || p.replacement === 'false');
     setToggle('prodCOD',         '#16a34a', codVal);
     setToggle('prodReplacement', '#d97706', repVal);
+
     if (p.images && p.images.length) {
       tempImgs = p.images.map(function(u){ return typeof u === 'string' ? u : (u.url||u.preview||''); }).filter(Boolean);
       renderImgGrid();
-      // Also show links in textarea so admin can see/edit them
       var urlBox = document.getElementById('prodImgUrls');
       if (urlBox) urlBox.value = tempImgs.join('\n');
     }
