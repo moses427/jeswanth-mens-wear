@@ -994,13 +994,18 @@ const THEMES={
         <input id="shopSearchInput" type="search" placeholder="Search shirts, kids, jeans…" oninput="renderShop()" autocomplete="off" style="width:100%;padding:10px 14px 10px 38px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;background:#fff;">
       </div>
       <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none;">
-        <button class="cat-tab active" data-scat="all" onclick="setShopCat('all',this)">All</button>
-        <button class="cat-tab" data-scat="men" onclick="setShopCat('men',this)">👔 Men</button>
-        <button class="cat-tab" data-scat="kids" onclick="setShopCat('kids',this)">👶 Kids</button>
-        <button class="cat-tab" data-scat="shirt" onclick="setShopCat('shirt',this)">Shirts</button>
-        <button class="cat-tab" data-scat="tshirt" onclick="setShopCat('tshirt',this)">T-Shirts</button>
-        <button class="cat-tab" data-scat="jeans" onclick="setShopCat('jeans',this)">Jeans</button>
-        <button class="cat-tab" data-scat="track" onclick="setShopCat('track',this)">Tracks</button>
+        <button class="cat-tab active" data-scat="all"      onclick="setShopCat('all',this)">All</button>
+        <button class="cat-tab" data-scat="men"             onclick="setShopCat('men',this)">👔 Men</button>
+        <button class="cat-tab" data-scat="kids"            onclick="setShopCat('kids',this)">👶 Kids</button>
+        <button class="cat-tab" data-scat="shirt"           onclick="setShopCat('shirt',this)">Shirts</button>
+        <button class="cat-tab" data-scat="tshirt"          onclick="setShopCat('tshirt',this)">T-Shirts</button>
+        <button class="cat-tab" data-scat="jeans"           onclick="setShopCat('jeans',this)">Jeans</button>
+        <button class="cat-tab" data-scat="track"           onclick="setShopCat('track',this)">Tracks</button>
+        <button class="cat-tab" data-scat="watch"           onclick="setShopCat('watch',this)">⌚ Watches</button>
+        <button class="cat-tab" data-scat="belt"            onclick="setShopCat('belt',this)">🪢 Belts</button>
+        <button class="cat-tab" data-scat="shoes"           onclick="setShopCat('shoes',this)">👟 Shoes</button>
+        <button class="cat-tab" data-scat="sunglass"        onclick="setShopCat('sunglass',this)">🕶️ Sunglasses</button>
+        <button class="cat-tab" data-scat="accessories"     onclick="setShopCat('accessories',this)">💼 Accessories</button>
       </div>
     </div>
     <div style="padding:12px;">
@@ -1134,187 +1139,270 @@ const THEMES={
 </div>
 
 <!-- ═══════════════════════════════════════
-     ADMIN PANEL
+     ADMIN PANEL — Professional
 ═══════════════════════════════════════ -->
-<div id="adminOv" class="hidden fixed inset-0 z-50 flex flex-col bg-gray-100">
-  <div class="bg-jet text-white px-4 py-3 flex justify-between items-center flex-shrink-0 shadow">
-    <h2 class="font-display text-lg text-gold">Admin Panel</h2>
-    <div class="flex items-center gap-2">
-      <span id="syncStatus" class="text-[10px] text-gray-400"></span>
-      <button onclick="syncNow()" class="text-[10px] text-gold border border-gold/40 px-2 py-1 rounded hover:bg-gold/10 transition-all">↻ Sync</button>
-      <button onclick="closeAdmin()" class="text-[10px] border border-gray-600 px-2.5 py-1.5 rounded hover:border-white transition-all">Exit</button>
+<div id="adminOv" class="hidden fixed inset-0 z-50 flex flex-col" style="background:#f1f5f9;">
+  <div style="background:#1A1A1A;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.3);">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:32px;height:32px;border-radius:8px;background:#C9A84C;display:flex;align-items:center;justify-content:center;font-size:16px;">⚙️</div>
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:17px;color:#C9A84C;line-height:1;">Admin Panel</div>
+        <div style="font-size:9px;color:#6b7280;letter-spacing:.05em;">Jeswanth Fashion Hub</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span id="syncStatus" style="font-size:10px;color:#9ca3af;"></span>
+      <button onclick="syncNow()" style="font-size:10px;color:#C9A84C;border:1px solid rgba(201,168,76,.4);background:transparent;padding:5px 10px;border-radius:6px;cursor:pointer;">↻ Sync</button>
+      <button onclick="closeAdmin()" style="font-size:10px;color:#fff;border:1px solid #374151;background:transparent;padding:5px 10px;border-radius:6px;cursor:pointer;">✕ Exit</button>
     </div>
   </div>
-
+  <div id="adminStatsBar" style="background:#fff;border-bottom:1px solid #e5e7eb;padding:10px 16px;display:flex;gap:0;flex-shrink:0;overflow-x:auto;scrollbar-width:none;">
+    <div style="text-align:center;padding:0 16px;border-right:1px solid #e5e7eb;flex-shrink:0;">
+      <div id="statProds" style="font-size:20px;font-weight:800;color:#1A1A1A;line-height:1;">0</div>
+      <div style="font-size:9px;color:#9ca3af;margin-top:2px;white-space:nowrap;">Products</div>
+    </div>
+    <div style="text-align:center;padding:0 16px;border-right:1px solid #e5e7eb;flex-shrink:0;">
+      <div id="statOrders" style="font-size:20px;font-weight:800;color:#16a34a;line-height:1;">0</div>
+      <div style="font-size:9px;color:#9ca3af;margin-top:2px;white-space:nowrap;">Orders</div>
+    </div>
+    <div style="text-align:center;padding:0 16px;border-right:1px solid #e5e7eb;flex-shrink:0;">
+      <div id="statRevenue" style="font-size:20px;font-weight:800;color:#800020;line-height:1;">₹0</div>
+      <div style="font-size:9px;color:#9ca3af;margin-top:2px;white-space:nowrap;">Revenue</div>
+    </div>
+    <div style="text-align:center;padding:0 16px;flex-shrink:0;">
+      <div id="statFeedback" style="font-size:20px;font-weight:800;color:#C9A84C;line-height:1;">0</div>
+      <div style="font-size:9px;color:#9ca3af;margin-top:2px;white-space:nowrap;">Reviews</div>
+    </div>
+  </div>
   <div class="flex-1 overflow-y-auto pb-20">
-    <!-- Products Tab -->
-    <div id="aProducts" class="p-4">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="font-semibold text-base">Products <span id="prodCount" class="text-gray-400 text-sm"></span></h3>
-        <button onclick="openProdModal()" class="bg-gold text-jet px-3 py-2 rounded text-xs font-bold flex items-center gap-1 shadow active:scale-95 transition-all">
-          <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add New
-        </button>
+    <div id="aProducts" style="padding:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div><h3 style="font-size:15px;font-weight:800;margin:0 0 2px;">Products <span id="prodCount" style="font-size:12px;color:#9ca3af;font-weight:400;"></span></h3><p style="font-size:11px;color:#9ca3af;margin:0;">Tap Edit to change any detail</p></div>
+        <button onclick="openProdModal()" style="background:#C9A84C;color:#1A1A1A;border:none;padding:9px 14px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;">＋ Add Product</button>
       </div>
-      <div id="prodTable" class="space-y-3"></div>
+      <input type="search" id="adminSearch" placeholder="🔍 Search products…" oninput="renderProdTable()" style="width:100%;padding:9px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;background:#fff;margin-bottom:12px;">
+      <div id="prodTable" style="display:flex;flex-direction:column;gap:10px;"></div>
     </div>
-    <!-- Orders Tab -->
-    <div id="aOrders" class="p-4 hidden">
-      <h3 class="font-semibold text-base mb-4">Orders</h3>
-      <div id="orderList" class="space-y-3"></div>
-    </div>
-    <!-- Feedback Tab -->
-    <div id="aFeedback" class="p-4 hidden">
-      <h3 class="font-semibold text-base mb-4">Customer Feedback</h3>
-      <div id="fbList" class="space-y-3"></div>
-    </div>
-    <!-- Theme Tab -->
-    <div id="aTheme" class="p-4 hidden">
-      <h3 class="font-semibold text-base mb-4">Theme &amp; Offer</h3>
-      <div class="bg-white p-4 rounded shadow-sm mb-4 border-l-4 border-gold">
-        <label class="text-xs font-bold text-gray-600 uppercase">Special Offer Text</label>
-        <input type="text" id="cfgOffer" class="w-full p-2.5 border rounded-sm mt-2 text-sm font-semibold">
+    <div id="aOrders" style="padding:14px;display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <h3 style="font-size:15px;font-weight:800;margin:0;">Orders</h3>
+        <button onclick="exportOrders()" style="background:#f1f5f9;border:1.5px solid #e5e7eb;padding:7px 12px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">📥 Export CSV</button>
       </div>
-      <h4 class="text-sm font-semibold mb-3">Theme</h4>
-      <div class="grid grid-cols-2 gap-2.5 mb-5">
-        <button onclick="setTheme('default')"   class="p-3 border rounded bg-white flex items-center gap-2 text-sm active:scale-95 transition-all"><span class="w-5 h-5 rounded-full bg-gray-800 flex-shrink-0"></span>Classic</button>
-        <button onclick="setTheme('pongal')"    class="p-3 border rounded bg-white flex items-center gap-2 text-sm active:scale-95 transition-all"><span class="w-5 h-5 rounded-full bg-yellow-700 flex-shrink-0"></span>Pongal 🌾</button>
-        <button onclick="setTheme('diwali')"    class="p-3 border rounded bg-white flex items-center gap-2 text-sm active:scale-95 transition-all"><span class="w-5 h-5 rounded-full bg-red-700 flex-shrink-0"></span>Diwali 🪔</button>
-        <button onclick="setTheme('christmas')" class="p-3 border rounded bg-white flex items-center gap-2 text-sm active:scale-95 transition-all"><span class="w-5 h-5 rounded-full bg-green-800 flex-shrink-0"></span>Christmas 🎄</button>
-        <button onclick="setTheme('newyear')"   class="p-3 border rounded bg-white flex items-center gap-2 text-sm active:scale-95 transition-all"><span class="w-5 h-5 rounded-full bg-black border flex-shrink-0"></span>New Year 🎉</button>
-        <button onclick="setTheme('ramzan')"    class="p-3 border rounded bg-white flex items-center gap-2 text-sm active:scale-95 transition-all"><span class="w-5 h-5 rounded-full bg-green-600 flex-shrink-0"></span>Ramzan 🌙</button>
-        <button onclick="setTheme('summer')"    class="p-3 border rounded bg-white flex items-center gap-2 text-sm active:scale-95 transition-all"><span class="w-5 h-5 rounded-full bg-orange-500 flex-shrink-0"></span>Summer ☀️</button>
-        <button onclick="setTheme('aadi')"      class="p-3 border rounded bg-white flex items-center gap-2 text-sm active:scale-95 transition-all"><span class="w-5 h-5 rounded-full bg-orange-600 flex-shrink-0"></span>Aadi 🌧️</button>
-      </div>
-      <button onclick="saveThemeOffer()" class="w-full bg-burg text-white py-3 rounded-sm font-bold text-sm active:scale-95 transition-all">Save Theme &amp; Offer</button>
+      <div id="orderList" style="display:flex;flex-direction:column;gap:10px;"></div>
     </div>
-    <!-- Settings Tab -->
-    <div id="aSettings" class="p-4 hidden">
-      <h3 class="font-semibold text-base mb-4">Settings</h3>
-      <div class="space-y-3">
-        <div class="bg-white p-4 rounded shadow-sm">
-          <label class="text-xs font-bold text-gray-600 uppercase">Google Apps Script URL</label>
-          <input type="url" id="cfgSheet" placeholder="https://script.google.com/macros/s/..." class="w-full p-2.5 border rounded-sm mt-2 text-sm">
-          <p class="text-[10px] text-gray-400 mt-1">Paste your deployed Web App URL here to enable cloud sync</p>
+    <div id="aFeedback" style="padding:14px;display:none;">
+      <h3 style="font-size:15px;font-weight:800;margin:0 0 12px;">Customer Reviews</h3>
+      <div id="fbList" style="display:flex;flex-direction:column;gap:10px;"></div>
+    </div>
+    <div id="aTheme" style="padding:14px;display:none;">
+      <h3 style="font-size:15px;font-weight:800;margin:0 0 14px;">🎨 Theme &amp; Offer</h3>
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px;margin-bottom:14px;">
+        <label style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;display:block;margin-bottom:6px;">Special Offer Banner</label>
+        <input type="text" id="cfgOffer" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;font-weight:600;">
+      </div>
+      <h4 style="font-size:13px;font-weight:700;margin:0 0 10px;">Festival Theme</h4>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px;">
+        <button onclick="setTheme('default')"   style="padding:10px;border:1.5px solid #e5e7eb;border-radius:8px;background:#fff;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;cursor:pointer;"><span style="width:16px;height:16px;border-radius:50%;background:#1A1A1A;flex-shrink:0;"></span>Classic</button>
+        <button onclick="setTheme('pongal')"    style="padding:10px;border:1.5px solid #e5e7eb;border-radius:8px;background:#fff;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;cursor:pointer;"><span style="width:16px;height:16px;border-radius:50%;background:#7B3F00;flex-shrink:0;"></span>Pongal 🌾</button>
+        <button onclick="setTheme('diwali')"    style="padding:10px;border:1.5px solid #e5e7eb;border-radius:8px;background:#fff;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;cursor:pointer;"><span style="width:16px;height:16px;border-radius:50%;background:#8B1A1A;flex-shrink:0;"></span>Diwali 🪔</button>
+        <button onclick="setTheme('christmas')" style="padding:10px;border:1.5px solid #e5e7eb;border-radius:8px;background:#fff;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;cursor:pointer;"><span style="width:16px;height:16px;border-radius:50%;background:#1A4731;flex-shrink:0;"></span>Christmas 🎄</button>
+        <button onclick="setTheme('newyear')"   style="padding:10px;border:1.5px solid #e5e7eb;border-radius:8px;background:#fff;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;cursor:pointer;"><span style="width:16px;height:16px;border-radius:50%;background:#0D0D0D;flex-shrink:0;"></span>New Year 🎉</button>
+        <button onclick="setTheme('ramzan')"    style="padding:10px;border:1.5px solid #e5e7eb;border-radius:8px;background:#fff;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;cursor:pointer;"><span style="width:16px;height:16px;border-radius:50%;background:#003300;flex-shrink:0;"></span>Ramzan 🌙</button>
+        <button onclick="setTheme('summer')"    style="padding:10px;border:1.5px solid #e5e7eb;border-radius:8px;background:#fff;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;cursor:pointer;"><span style="width:16px;height:16px;border-radius:50%;background:#B34700;flex-shrink:0;"></span>Summer ☀️</button>
+        <button onclick="setTheme('aadi')"      style="padding:10px;border:1.5px solid #e5e7eb;border-radius:8px;background:#fff;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;cursor:pointer;"><span style="width:16px;height:16px;border-radius:50%;background:#CC3700;flex-shrink:0;"></span>Aadi 🌧️</button>
+      </div>
+      <button onclick="saveThemeOffer()" style="width:100%;background:#800020;color:#fff;border:none;padding:13px;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;">💾 Save Theme &amp; Offer</button>
+    </div>
+    <div id="aSettings" style="padding:14px;display:none;">
+      <h3 style="font-size:15px;font-weight:800;margin:0 0 14px;">⚙️ Settings</h3>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px;">
+          <label style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;display:block;margin-bottom:6px;">Google Apps Script URL</label>
+          <input type="url" id="cfgSheet" placeholder="https://script.google.com/macros/s/…" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:12px;">
+          <p style="font-size:10px;color:#9ca3af;margin:5px 0 0;">Paste your deployed Web App URL for Google Sheet sync</p>
         </div>
-        <div class="bg-white p-4 rounded shadow-sm">
-          <label class="text-xs font-bold text-gray-600 uppercase">WhatsApp Number</label>
-          <input type="tel" id="cfgWa" placeholder="919876543210" class="w-full p-2.5 border rounded-sm mt-2 text-sm">
+        <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px;">
+          <label style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;display:block;margin-bottom:6px;">WhatsApp Number</label>
+          <input type="tel" id="cfgWa" placeholder="919876543210" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;">
         </div>
-        <div class="bg-white p-4 rounded shadow-sm">
-          <label class="text-xs font-bold text-gray-600 uppercase">Admin Password</label>
-          <input type="password" id="cfgPass" class="w-full p-2.5 border rounded-sm mt-2 text-sm">
+        <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px;">
+          <label style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;display:block;margin-bottom:6px;">Admin Password</label>
+          <input type="password" id="cfgPass" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;">
         </div>
-        <button onclick="saveSettings()" class="w-full bg-burg text-white py-3 rounded-sm font-bold text-sm active:scale-95 transition-all">Save Settings</button>
-
-        <!-- Instructions -->
-        <div class="bg-blue-50 border border-blue-100 p-4 rounded text-xs text-blue-800">
-          <p class="font-bold mb-2">📋 Google Sheet Setup Steps:</p>
-          <ol class="list-decimal pl-4 space-y-1.5">
-            <li>Create a Google Sheet with two tabs: <strong>Products</strong> and <strong>Orders</strong></li>
-            <li>In Products sheet, add headers: ID, Name, Price, Desc, Colors, Images</li>
-            <li>In Orders sheet, add headers: Date, Name, Phone, Address, Items, Total</li>
-            <li>Go to <strong>Extensions › Apps Script</strong></li>
-            <li>Paste the Google Apps Script code (provided separately)</li>
-            <li>Click <strong>Deploy › New Deployment › Web App</strong></li>
-            <li>Set "Execute as: Me" and "Who has access: Anyone"</li>
-            <li>Copy the URL and paste it above</li>
-          </ol>
-          <p class="mt-2 text-blue-600 font-medium">After setup, use the "Sync" button to load products from the sheet!</p>
+        <button onclick="saveSettings()" style="width:100%;background:#1A1A1A;color:#fff;border:none;padding:13px;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;">💾 Save Settings</button>
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px;font-size:11px;color:#1e40af;">
+          <p style="font-weight:700;margin:0 0 8px;">📋 Updated Google Sheet Headers:</p>
+          <p style="margin:0 0 4px;font-family:monospace;background:#dbeafe;padding:4px 8px;border-radius:4px;">Products: ID | Name | Price | MRP | Desc | Colors | Images | Category | Stock | COD | Replacement | Badge | Fabric | Fit</p>
+          <p style="margin:6px 0 4px;font-family:monospace;background:#dbeafe;padding:4px 8px;border-radius:4px;">Orders: Date | Name | Phone | Address | Items | Total</p>
+          <p style="margin:6px 0 0;font-family:monospace;background:#dbeafe;padding:4px 8px;border-radius:4px;">Feedback: Date | Name | Phone | Rating | Message</p>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Admin Bottom Nav -->
-  <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex z-20 safe-bottom">
-    <button onclick="showATab('Products',event)" class="anav active flex-1 flex flex-col items-center py-2 text-gray-500 border-t-2 border-transparent">
-      <i data-lucide="box" class="w-5 h-5"></i><span class="text-[9px] mt-0.5">Products</span>
-    </button>
-    <button onclick="showATab('Orders',event)" class="anav flex-1 flex flex-col items-center py-2 text-gray-500 border-t-2 border-transparent">
-      <i data-lucide="list" class="w-5 h-5"></i><span class="text-[9px] mt-0.5">Orders</span>
-    </button>
-    <button onclick="showATab('Feedback',event)" class="anav flex-1 flex flex-col items-center py-2 text-gray-500 border-t-2 border-transparent">
-      <i data-lucide="message-square" class="w-5 h-5"></i><span class="text-[9px] mt-0.5">Feedback</span>
-    </button>
-    <button onclick="showATab('Theme',event)" class="anav flex-1 flex flex-col items-center py-2 text-gray-500 border-t-2 border-transparent">
-      <i data-lucide="palette" class="w-5 h-5"></i><span class="text-[9px] mt-0.5">Theme</span>
-    </button>
-    <button onclick="showATab('Settings',event)" class="anav flex-1 flex flex-col items-center py-2 text-gray-500 border-t-2 border-transparent">
-      <i data-lucide="settings" class="w-5 h-5"></i><span class="text-[9px] mt-0.5">Settings</span>
-    </button>
+  <div style="position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e7eb;display:flex;z-index:20;padding-bottom:env(safe-area-inset-bottom,0);">
+    <button onclick="showATab('Products',event)" class="anav active" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0;color:#9ca3af;border:none;background:transparent;cursor:pointer;border-top:2px solid transparent;"><span style="font-size:16px;">📦</span><span style="font-size:9px;margin-top:1px;">Products</span></button>
+    <button onclick="showATab('Orders',event)" class="anav" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0;color:#9ca3af;border:none;background:transparent;cursor:pointer;border-top:2px solid transparent;"><span style="font-size:16px;">🛒</span><span style="font-size:9px;margin-top:1px;">Orders</span></button>
+    <button onclick="showATab('Feedback',event)" class="anav" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0;color:#9ca3af;border:none;background:transparent;cursor:pointer;border-top:2px solid transparent;"><span style="font-size:16px;">⭐</span><span style="font-size:9px;margin-top:1px;">Reviews</span></button>
+    <button onclick="showATab('Theme',event)" class="anav" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0;color:#9ca3af;border:none;background:transparent;cursor:pointer;border-top:2px solid transparent;"><span style="font-size:16px;">🎨</span><span style="font-size:9px;margin-top:1px;">Theme</span></button>
+    <button onclick="showATab('Settings',event)" class="anav" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0;color:#9ca3af;border:none;background:transparent;cursor:pointer;border-top:2px solid transparent;"><span style="font-size:16px;">⚙️</span><span style="font-size:9px;margin-top:1px;">Settings</span></button>
   </div>
 </div>
 
+
 <!-- ═══════════════════════════════════════
-     PRODUCT MODAL
+     PRODUCT MODAL — Full Details
 ═══════════════════════════════════════ -->
 <div id="prodModal" class="fixed inset-0 bg-black/60 z-[60] hidden items-center justify-center p-3 sm:p-4" style="display:none">
-  <div class="bg-white rounded-lg w-full max-w-md flex flex-col" style="max-height:92dvh">
-    <div class="p-4 border-b flex justify-between items-center flex-shrink-0">
-      <h3 id="prodModalTitle" class="font-semibold">Add Product</h3>
-      <button onclick="closeProdModal()" class="p-1 hover:bg-gray-100 rounded-full"><i data-lucide="x" class="w-5 h-5 text-gray-500"></i></button>
-    </div>
-    <div class="p-4 space-y-3 overflow-y-auto flex-1">
-      <input type="hidden" id="editId">
+  <div class="bg-white rounded-xl w-full max-w-md flex flex-col" style="max-height:93dvh">
+    <!-- Modal header -->
+    <div style="padding:14px 16px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
       <div>
-        <label class="text-xs font-bold text-gray-600 block mb-2">Product Photos</label>
+        <h3 id="prodModalTitle" style="font-size:15px;font-weight:800;margin:0 0 2px;">Add Product</h3>
+        <p style="font-size:10px;color:#9ca3af;margin:0;">Fill details below — all sync to Google Sheet</p>
+      </div>
+      <button onclick="closeProdModal()" style="background:#f3f4f6;border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>
 
-        <!-- ONE-CLICK UPLOAD via imgbb -->
-        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:6px;padding:10px;margin-bottom:8px;">
-          <p style="font-size:11px;font-weight:700;color:#166534;margin-bottom:6px;">📸 Upload from Phone / Computer</p>
-          <input type="file" id="imgbbUpload" accept="image/*" multiple class="hidden" onchange="uploadToImgbb(event)">
-          <button type="button" onclick="document.getElementById('imgbbUpload').click()"
-            style="width:100%;background:#16a34a;color:#fff;border:none;padding:10px;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
-            📷 Choose Photos to Upload
-          </button>
-          <p style="font-size:10px;color:#4ade80;margin-top:4px;text-align:center;">Select up to 5 photos — uploads automatically, works on all devices forever ✓</p>
-          <div id="uploadProgress" style="display:none;margin-top:8px;">
-            <div style="background:#dcfce7;border-radius:4px;padding:6px;text-align:center;">
-              <p id="uploadProgressText" style="font-size:11px;color:#166534;font-weight:600;"></p>
-            </div>
-          </div>
-        </div>
+    <div style="padding:14px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:12px;">
+      <input type="hidden" id="editId">
 
-        <!-- OR paste any URL -->
-        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px;margin-bottom:8px;">
-          <p style="font-size:11px;font-weight:700;color:#475569;margin-bottom:4px;">🔗 Or Paste Image Links</p>
-          <textarea id="prodImgUrls" rows="3"
-            placeholder="Paste any image link — one per line:&#10;https://drive.google.com/file/d/ID/view&#10;https://i.ibb.co/xxx/photo.jpg&#10;https://any-image-url.jpg"
-            class="w-full p-2 border border-gray-200 rounded-sm text-xs resize-none bg-white"></textarea>
-          <button type="button" onclick="previewDriveLinks()"
-            style="margin-top:6px;width:100%;background:#475569;color:#fff;border:none;padding:7px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;">
-            + Add Links
-          </button>
-        </div>
-
-        <!-- Preview grid -->
-        <div id="imgGrid" class="grid grid-cols-3 gap-2 mt-1"></div>
+      <!-- SECTION: Images -->
+      <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px;">
+        <p style="font-size:12px;font-weight:700;color:#1A1A1A;margin:0 0 4px;">📸 Product Photos</p>
+        <p style="font-size:10px;color:#9ca3af;margin:0 0 8px;">Paste links one per line — or paste a comma-separated list, it works too!</p>
+        <textarea id="prodImgUrls" rows="5"
+          placeholder="https://i.ibb.co/xxx/photo1.jpg&#10;https://i.ibb.co/yyy/photo2.jpg&#10;&#10;Or paste comma-separated:&#10;https://i.ibb.co/aaa.jpg,https://i.ibb.co/bbb.jpg"
+          style="width:100%;padding:9px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:11px;resize:vertical;background:#fff;line-height:1.7;min-height:100px;font-family:monospace;"></textarea>
+        <button type="button" onclick="previewDriveLinks()"
+          style="margin-top:7px;width:100%;background:#1A1A1A;color:#fff;border:none;padding:9px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;">✓ Add Images</button>
+        <div id="imgGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px;"></div>
         <p id="driveLoadStatus" class="text-[11px] text-center mt-1 hidden"></p>
         <div id="folderHelp" class="hidden"></div>
-      </div>
-      <input type="text"   id="prodName"  placeholder="Product Name *" class="w-full p-3 border border-gray-200 rounded-sm text-sm">
-      <input type="number" id="prodPrice" placeholder="Price (₹) *"    class="w-full p-3 border border-gray-200 rounded-sm text-sm">
-
-      <!-- ✨ AI GENERATE SECTION -->
-      <div style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1px solid #c4b5fd;border-radius:8px;padding:12px;">
-        <p style="font-size:11px;font-weight:700;color:#6d28d9;margin-bottom:8px;">✨ AI Auto-Fill (Optional)</p>
-        <input type="text" id="aiKeywords" placeholder="e.g. cotton shirt, kids summer, blue jeans…"
-          style="width:100%;padding:8px 10px;border:1px solid #c4b5fd;border-radius:6px;font-size:12px;background:#fff;margin-bottom:8px;">
-        <button type="button" onclick="aiGenerateProduct()" id="aiGenBtn" class="ai-btn" style="width:100%;justify-content:center;">
-          <span>✨</span> Generate Name, Description &amp; Tags
-        </button>
-        <p id="aiGenStatus" style="font-size:11px;color:#7c3aed;margin-top:6px;text-align:center;display:none;"></p>
+        <input type="file" id="imgbbUpload" accept="image/*" multiple class="hidden">
+        <div id="uploadProgress" style="display:none;"></div>
       </div>
 
-      <textarea id="prodDesc" placeholder="Description" rows="2" class="w-full p-3 border border-gray-200 rounded-sm text-sm resize-none"></textarea>
-      <div>
-        <label class="text-xs font-bold text-gray-600 block mb-1.5">Colors (comma-separated)</label>
-        <input type="text" id="prodColors" placeholder="Black, Blue, White" class="w-full p-3 border border-gray-200 rounded-sm text-sm">
+      <!-- SECTION: Smart Auto-Fill -->
+      <div style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1px solid #c4b5fd;border-radius:10px;padding:12px;">
+        <p style="font-size:12px;font-weight:700;color:#6d28d9;margin:0 0 4px;">✨ Smart Auto-Fill</p>
+        <p style="font-size:10px;color:#7c3aed;margin:0 0 8px;">Type product type → name, desc & colors fill automatically</p>
+        <div style="display:flex;gap:6px;">
+          <input type="text" id="aiKeywords" placeholder="watch, belt, shirt, kids dress…"
+            style="flex:1;padding:9px 10px;border:1px solid #c4b5fd;border-radius:7px;font-size:13px;background:#fff;"
+            onkeypress="if(event.key==='Enter')aiGenerateProduct()">
+          <button type="button" onclick="aiGenerateProduct()" id="aiGenBtn" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:7px;padding:9px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">✨ Fill</button>
+        </div>
+        <p id="aiGenStatus" style="font-size:11px;color:#7c3aed;margin:6px 0 0;text-align:center;display:none;"></p>
       </div>
-    </div>
-    <div class="p-4 border-t flex gap-2 bg-gray-50 flex-shrink-0">
-      <button onclick="closeProdModal()" class="flex-1 py-3 border rounded-sm text-sm hover:bg-gray-100 active:scale-95 transition-all">Cancel</button>
-      <button onclick="saveProduct()" class="flex-1 py-3 bg-burg text-white rounded-sm text-sm font-bold hover:opacity-90 active:scale-95 transition-all">Save Product</button>
+
+      <!-- SECTION: Basic Info -->
+      <div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;">
+        <p style="font-size:11px;font-weight:800;color:#1A1A1A;text-transform:uppercase;letter-spacing:.08em;margin:0 0 2px;">📋 Basic Info</p>
+        <div>
+          <label style="font-size:10px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px;">Product Name *</label>
+          <input type="text" id="prodName" placeholder="e.g. Men's Cotton Casual Shirt" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div>
+            <label style="font-size:10px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px;">Selling Price (₹) *</label>
+            <input type="number" id="prodPrice" placeholder="e.g. 499" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;font-weight:700;color:#800020;">
+          </div>
+          <div>
+            <label style="font-size:10px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px;">MRP / Original (₹)</label>
+            <input type="number" id="prodMRP" placeholder="e.g. 799" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;">
+          </div>
+        </div>
+        <div>
+          <label style="font-size:10px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px;">Category</label>
+          <select id="prodCategory" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;background:#fff;">
+            <option value="">-- Select Category --</option>
+            <option value="men">👔 Men's Wear</option>
+            <option value="kids">👶 Kids Wear</option>
+            <option value="shirt">Shirts</option>
+            <option value="tshirt">T-Shirts</option>
+            <option value="jeans">Jeans / Pants</option>
+            <option value="track">Track Pants / Lycra</option>
+            <option value="watch">⌚ Watches</option>
+            <option value="belt">🪢 Belts</option>
+            <option value="shoes">👟 Shoes / Sandals</option>
+            <option value="sunglass">🕶️ Sunglasses</option>
+            <option value="accessories">💼 Accessories</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:10px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px;">Description</label>
+          <textarea id="prodDesc" placeholder="Short sales-focused description…" rows="2" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;resize:none;"></textarea>
+        </div>
+        <div>
+          <label style="font-size:10px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px;">Available Colors <span style="font-weight:400;">(comma-separated)</span></label>
+          <input type="text" id="prodColors" placeholder="Black, Blue, White, Red" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;">
+        </div>
+      </div>
+
+      <!-- SECTION: Extra Details -->
+      <div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;">
+        <p style="font-size:11px;font-weight:800;color:#1A1A1A;text-transform:uppercase;letter-spacing:.08em;margin:0 0 2px;">🔍 Product Details</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div>
+            <label style="font-size:10px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px;">Fabric / Material</label>
+            <input type="text" id="prodFabric" placeholder="e.g. 100% Cotton" style="width:100%;padding:9px 10px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:12px;">
+          </div>
+          <div>
+            <label style="font-size:10px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px;">Fit / Style</label>
+            <input type="text" id="prodFit" placeholder="e.g. Slim Fit" style="width:100%;padding:9px 10px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:12px;">
+          </div>
+        </div>
+        <div>
+          <label style="font-size:10px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px;">Badge Label <span style="font-weight:400;">(shown on card)</span></label>
+          <select id="prodBadge" style="width:100%;padding:9px 10px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;background:#fff;">
+            <option value="">No Badge</option>
+            <option value="new">✨ NEW</option>
+            <option value="best">⭐ BEST SELLER</option>
+            <option value="offer">🔥 OFFER</option>
+            <option value="hot">💰 VALUE</option>
+            <option value="limited">⚡ LIMITED</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- SECTION: Stock & Policy -->
+      <div style="background:#fff;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;">
+        <p style="font-size:11px;font-weight:800;color:#1A1A1A;text-transform:uppercase;letter-spacing:.08em;margin:0 0 2px;">📦 Stock &amp; Policy</p>
+        <div>
+          <label style="font-size:10px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px;">Stock Count</label>
+          <input type="number" id="prodStock" placeholder="e.g. 10  (leave blank = unlimited)" style="width:100%;padding:9px 10px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;">
+        </div>
+        <!-- COD Toggle -->
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;">
+          <div>
+            <p style="font-size:13px;font-weight:700;margin:0 0 2px;color:#166534;">💵 Cash on Delivery (COD)</p>
+            <p style="font-size:10px;color:#4ade80;margin:0;">Customer pays when order arrives</p>
+          </div>
+          <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;">
+            <input type="checkbox" id="prodCOD" checked style="opacity:0;width:0;height:0;">
+            <span onclick="this.previousElementSibling.checked=!this.previousElementSibling.checked;this.style.background=this.previousElementSibling.checked?'#16a34a':'#d1d5db';" style="position:absolute;cursor:pointer;inset:0;background:#16a34a;border-radius:24px;transition:.3s;"></span>
+            <span onclick="document.getElementById('prodCOD').checked=!document.getElementById('prodCOD').checked;" style="position:absolute;content:'';height:18px;width:18px;left:3px;top:3px;background:white;border-radius:50%;transition:.3s;pointer-events:none;"></span>
+          </label>
+        </div>
+        <!-- Replacement Toggle -->
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#fff8f0;border:1px solid #fed7aa;border-radius:8px;">
+          <div>
+            <p style="font-size:13px;font-weight:700;margin:0 0 2px;color:#92400e;">🔄 Replacement Available</p>
+            <p style="font-size:10px;color:#f59e0b;margin:0;">Easy exchange within 7 days</p>
+          </div>
+          <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;">
+            <input type="checkbox" id="prodReplacement" checked style="opacity:0;width:0;height:0;">
+            <span onclick="this.previousElementSibling.checked=!this.previousElementSibling.checked;this.style.background=this.previousElementSibling.checked?'#d97706':'#d1d5db';" style="position:absolute;cursor:pointer;inset:0;background:#d97706;border-radius:24px;transition:.3s;"></span>
+            <span style="position:absolute;height:18px;width:18px;left:3px;top:3px;background:white;border-radius:50%;transition:.3s;pointer-events:none;"></span>
+          </label>
+        </div>
+      </div>
+
+    </div><!-- end scrollable -->
+
+    <div style="padding:12px 14px;border-top:1px solid #e5e7eb;display:flex;gap:8px;background:#f9fafb;flex-shrink:0;">
+      <button onclick="closeProdModal()" style="flex:1;padding:12px;border:1.5px solid #e5e7eb;border-radius:9px;background:#fff;font-size:13px;font-weight:600;cursor:pointer;">Cancel</button>
+      <button onclick="saveProduct()" style="flex:2;padding:12px;background:#800020;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:800;cursor:pointer;">💾 Save Product</button>
     </div>
   </div>
 </div>
@@ -1671,9 +1759,23 @@ function getFilteredProducts() {
   let list = products;
   if (shopCat !== 'all') {
     list = list.filter(p => {
-      const n = (p.name + ' ' + (p.desc || '')).toLowerCase();
-      const catMap = { men:'men', kids:'kids', shirt:'shirt', tshirt:'t-shirt', jeans:'jean', track:'track' };
-      return n.includes(catMap[shopCat] || shopCat);
+      const n = (p.name + ' ' + (p.desc || '') + ' ' + (p.colors||[]).join(' ')).toLowerCase();
+      // Each category maps to an array of keywords — match any of them
+      const catKeywords = {
+        men:         ['men', 'man', 'gents', 'male', 'shirt', 'jeans', 'trouser', 'pant', 'track', 'tshirt', 't-shirt'],
+        kids:        ['kids', 'kid', 'child', 'children', 'boy', 'girl', 'baby', 'toddler', 'junior'],
+        shirt:       ['shirt', 'formal shirt', 'casual shirt', 'check shirt', 'half sleeve', 'full sleeve'],
+        tshirt:      ['t-shirt', 'tshirt', 'tee', 'polo', 'round neck', 'v-neck'],
+        jeans:       ['jeans', 'jean', 'denim', 'trouser', 'pant', 'bottom'],
+        track:       ['track', 'lycra', 'jogger', 'sport', 'gym', 'athletic'],
+        watch:       ['watch', 'watches', 'wristwatch', 'timepiece', 'analog', 'digital watch'],
+        belt:        ['belt', 'belts', 'strap', 'leather belt', 'waist belt'],
+        shoes:       ['shoes', 'shoe', 'footwear', 'sandal', 'slipper', 'chappal', 'sneaker', 'loafer', 'boot', 'floater'],
+        sunglass:    ['sunglass', 'sunglasses', 'shades', 'eyewear', 'goggle', 'uv protection'],
+        accessories: ['accessory', 'accessories', 'cap', 'hat', 'bag', 'wallet', 'purse', 'keychain', 'bracelet', 'chain', 'necklace', 'ring', 'earring', 'scarf', 'gloves', 'socks', 'innerwear', 'underwear', 'brief', 'vest']
+      };
+      const keys = catKeywords[shopCat] || [shopCat];
+      return keys.some(k => n.includes(k));
     });
   }
   if (q) {
@@ -1684,7 +1786,19 @@ function getFilteredProducts() {
 
 // Badge logic: assign badge based on index / name
 function getProductBadge(p, idx) {
-  const n = p.name.toLowerCase();
+  // Admin-set badge takes priority
+  if (p.badge) {
+    var badgeMap = {
+      'new':     '<span class="offer-badge badge-new">✨ NEW</span>',
+      'best':    '<span class="offer-badge badge-best">⭐ BEST</span>',
+      'offer':   '<span class="offer-badge badge-sale">🔥 OFFER</span>',
+      'hot':     '<span class="offer-badge badge-hot">💰 VALUE</span>',
+      'limited': '<span class="offer-badge badge-sale">⚡ LIMITED</span>'
+    };
+    if (badgeMap[p.badge]) return badgeMap[p.badge];
+  }
+  // Auto-detect from name/price as fallback
+  var n = p.name.toLowerCase();
   if (n.includes('offer') || n.includes('combo')) return '<span class="offer-badge badge-sale">🔥 OFFER</span>';
   if (idx < 2) return '<span class="offer-badge badge-new">✨ NEW</span>';
   if (n.includes('best') || idx === 3) return '<span class="offer-badge badge-best">⭐ BEST</span>';
@@ -1747,12 +1861,29 @@ function renderShop() {
       + '<div class="pcard-body">'
       + '<p class="pcard-name">' + p.name + '</p>'
       + '<div class="pcard-rating">' + getRatingStars(p) + '</div>'
-      + '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:5px;">'
-      + '<span class="pcard-price">₹' + p.price + '</span>'
-      + '<div class="pcard-btns" style="margin-top:0;">'
+      // Price row with real MRP
+      + (function(){
+          var mrp = p.mrp || Math.round(p.price * 1.3);
+          var disc = Math.round((mrp - p.price) / mrp * 100);
+          return '<div style="display:flex;align-items:baseline;gap:5px;margin:3px 0 4px;">'
+            + '<span class="pcard-price">₹' + p.price + '</span>'
+            + '<span style="font-size:10px;color:#9ca3af;text-decoration:line-through;">₹' + mrp + '</span>'
+            + '<span style="font-size:9px;color:#16a34a;font-weight:700;">' + disc + '% off</span>'
+            + '</div>';
+        })()
+      // Stock warning
+      + (p.stock != null && p.stock !== '' && Number(p.stock) <= 5
+          ? '<p style="font-size:9px;color:#dc2626;font-weight:700;margin:0 0 4px;">⚠️ Only ' + p.stock + ' left!</p>'
+          : '')
+      // COD + Replace micro-badges
+      + '<div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:5px;">'
+      + (p.cod !== false ? '<span style="font-size:8px;background:#fff8f0;color:#d97706;padding:1px 5px;border-radius:3px;font-weight:700;">COD</span>' : '')
+      + (p.replacement !== false ? '<span style="font-size:8px;background:#f0f9ff;color:#0284c7;padding:1px 5px;border-radius:3px;font-weight:700;">🔄</span>' : '')
+      + '</div>'
+      + '<div style="display:flex;gap:4px;">'
       + '<button type="button" onclick="event.stopPropagation();quickBuyNow(\'' + pid + '\')" class="pcard-buy" title="Buy Now">⚡</button>'
       + '<button type="button" onclick="event.stopPropagation();addToCart(\'' + pid + '\')" class="pcard-cart">+ Cart</button>'
-      + '</div></div>'
+      + '</div>'
       + '</div></div>';
   }).join('');
 
@@ -1956,72 +2087,160 @@ function tryLogin() {
 
 function loadAdmin() {
   document.getElementById('cfgSheet').value = cfg.sheet;
-  document.getElementById('cfgWa').value = cfg.wa;
-  document.getElementById('cfgPass').value = cfg.pass;
+  document.getElementById('cfgWa').value    = cfg.wa;
+  document.getElementById('cfgPass').value  = cfg.pass;
   document.getElementById('cfgOffer').value = cfg.offer;
-  renderProdTable(); renderOrders(); renderAdminFeedbacks();
-  lucide.createIcons();
+  renderProdTable();
+  renderOrders();
+  renderAdminFeedbacks();
+  updateAdminStats();
+}
+
+function updateAdminStats() {
+  var sp = document.getElementById('statProds');
+  var so = document.getElementById('statOrders');
+  var sr = document.getElementById('statRevenue');
+  var sf = document.getElementById('statFeedback');
+  if (sp) sp.textContent = products.length;
+  if (so) so.textContent = orders.length;
+  if (sr) {
+    var rev = orders.reduce(function(s,o){ return s + (Number(o.total)||0); }, 0);
+    sr.textContent = rev >= 1000 ? '₹' + (rev/1000).toFixed(1) + 'K' : '₹' + rev;
+  }
+  if (sf) sf.textContent = feedbacks.length;
 }
 
 function showATab(tab, e) {
-  ['Products','Orders','Feedback','Theme','Settings'].forEach(t=>document.getElementById('a'+t).classList.add('hidden'));
-  document.getElementById('a'+tab).classList.remove('hidden');
-  document.querySelectorAll('.anav').forEach(el=>el.classList.remove('active'));
-  if(e&&e.currentTarget) e.currentTarget.classList.add('active');
-  lucide.createIcons();
+  ['Products','Orders','Feedback','Theme','Settings'].forEach(function(t) {
+    var el = document.getElementById('a' + t);
+    if (el) el.style.display = 'none';
+  });
+  var show = document.getElementById('a' + tab);
+  if (show) show.style.display = 'block';
+  document.querySelectorAll('.anav').forEach(function(el) {
+    el.classList.remove('active');
+    el.style.color = '#9ca3af';
+    el.style.borderTopColor = 'transparent';
+  });
+  if (e && e.currentTarget) {
+    e.currentTarget.classList.add('active');
+    e.currentTarget.style.color = '#C9A84C';
+    e.currentTarget.style.borderTopColor = '#C9A84C';
+  }
 }
 
 function renderProdTable() {
-  const count = products.length;
-  document.getElementById('prodCount').textContent = `(${count})`;
-  document.getElementById('prodTable').innerHTML = count===0
-    ? '<p class="text-center text-gray-400 py-10 text-sm">No products. Add some!</p>'
-    : products.map(p=>`
-    <div class="bg-white p-3 rounded shadow-sm flex items-center gap-3">
-      <div class="flex -space-x-2 flex-shrink-0">
-        ${p.images.slice(0,2).map(img=>`<img src="${img}" class="w-11 h-11 rounded border-2 border-white object-cover" onerror="this.src='https://via.placeholder.com/44x44?text=?'">`).join('')}
-      </div>
-      <div class="flex-1 min-w-0">
-        <h4 class="font-medium text-sm truncate">${p.name}</h4>
-        <p class="text-burg font-bold text-sm">₹${p.price}</p>
-      </div>
-      <div class="flex gap-1.5 flex-shrink-0">
-        <button onclick="editProd(${p.id})" class="text-[11px] bg-blue-50 text-blue-600 px-2.5 py-1.5 rounded active:scale-95 transition-all">Edit</button>
-        <button onclick="delProd(${p.id})" class="text-[11px] bg-red-50 text-red-600 px-2.5 py-1.5 rounded active:scale-95 transition-all">Del</button>
-      </div>
-    </div>
-  `).join('');
-  lucide.createIcons();
+  var q = (document.getElementById('adminSearch') ? document.getElementById('adminSearch').value : '').toLowerCase();
+  var list = q ? products.filter(function(p){ return (p.name+' '+(p.desc||'')).toLowerCase().includes(q); }) : products;
+  var count = list.length;
+  var countEl = document.getElementById('prodCount');
+  if (countEl) countEl.textContent = '(' + products.length + ')';
+
+  var html = count === 0
+    ? '<div style="text-align:center;padding:40px 0;color:#9ca3af;"><div style="font-size:40px;margin-bottom:8px;">📦</div><p style="font-size:14px;">No products yet. Add one!</p></div>'
+    : list.map(function(p) {
+        var img = (p.images && p.images[0]) || '';
+        var stockBadge = p.stock != null && p.stock !== ''
+          ? (Number(p.stock) <= 3
+              ? '<span style="font-size:9px;background:#fef2f2;color:#dc2626;padding:2px 6px;border-radius:4px;font-weight:700;">⚠️ Low Stock: ' + p.stock + '</span>'
+              : '<span style="font-size:9px;background:#f0fdf4;color:#16a34a;padding:2px 6px;border-radius:4px;font-weight:700;">✓ Stock: ' + p.stock + '</span>')
+          : '';
+        var codBadge = p.cod === false ? '' : '<span style="font-size:9px;background:#fff8f0;color:#d97706;padding:2px 5px;border-radius:4px;font-weight:700;">COD</span>';
+        var repBadge = p.replacement === false ? '' : '<span style="font-size:9px;background:#f0f9ff;color:#0284c7;padding:2px 5px;border-radius:4px;font-weight:700;">🔄 Replace</span>';
+        var discount = p.mrp && p.mrp > p.price ? Math.round((p.mrp - p.price) / p.mrp * 100) + '% OFF' : '';
+
+        return '<div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:12px;display:flex;gap:12px;align-items:flex-start;">'
+          + '<div style="width:60px;height:60px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#f5f0eb;">'
+          + (img ? '<img src="' + img + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.src=\'https://via.placeholder.com/60?text=?\'">':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:20px;">📦</div>')
+          + '</div>'
+          + '<div style="flex:1;min-width:0;">'
+          + '<p style="font-size:13px;font-weight:700;margin:0 0 3px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + p.name + '</p>'
+          + '<div style="display:flex;align-items:baseline;gap:6px;margin-bottom:5px;">'
+          + '<span style="font-size:15px;font-weight:800;color:#800020;">₹' + p.price + '</span>'
+          + (p.mrp ? '<span style="font-size:11px;color:#9ca3af;text-decoration:line-through;">₹' + p.mrp + '</span>' : '')
+          + (discount ? '<span style="font-size:10px;color:#16a34a;font-weight:700;">' + discount + '</span>' : '')
+          + '</div>'
+          + '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;">'
+          + (p.category ? '<span style="font-size:9px;background:#f1f5f9;color:#374151;padding:2px 6px;border-radius:4px;font-weight:600;">' + p.category + '</span>' : '')
+          + stockBadge + codBadge + repBadge
+          + '</div>'
+          + '<div style="display:flex;gap:6px;">'
+          + '<button onclick="editProd(' + p.id + ')" style="flex:1;background:#eff6ff;color:#2563eb;border:none;padding:7px 0;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">✏️ Edit</button>'
+          + '<button onclick="delProd(' + p.id + ')" style="background:#fef2f2;color:#dc2626;border:none;padding:7px 12px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">🗑</button>'
+          + '</div>'
+          + '</div></div>';
+      }).join('');
+
+  document.getElementById('prodTable').innerHTML = html;
 }
 
 function renderOrders() {
-  document.getElementById('orderList').innerHTML = orders.length===0
-    ? '<p class="text-center text-gray-400 py-14 text-sm">No orders yet</p>'
-    : orders.slice().reverse().map(o=>`
-    <div class="bg-white p-4 rounded shadow-sm">
-      <div class="flex justify-between mb-2 border-b pb-2">
-        <div><p class="font-semibold text-sm">${o.name}</p><p class="text-gray-400 text-xs">${o.phone||o.addr||''}</p></div>
-        <div class="text-right"><p class="font-bold text-green-600 text-sm">₹${o.total}</p><p class="text-[10px] text-gray-400">${o.date}</p></div>
-      </div>
-      <p class="text-xs text-gray-600">${o.items}</p>
-    </div>
-  `).join('');
-  lucide.createIcons();
+  var el = document.getElementById('orderList');
+  if (!el) return;
+  if (!orders.length) {
+    el.innerHTML = '<div style="text-align:center;padding:40px 0;color:#9ca3af;"><div style="font-size:40px;margin-bottom:8px;">🛒</div><p>No orders yet</p></div>';
+    return;
+  }
+  el.innerHTML = orders.slice().reverse().map(function(o, i) {
+    return '<div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:14px;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">'
+      + '<div>'
+      + '<p style="font-size:14px;font-weight:700;margin:0 0 2px;">' + (o.name||'') + '</p>'
+      + '<p style="font-size:11px;color:#9ca3af;margin:0;">📞 ' + (o.phone||'') + '</p>'
+      + '</div>'
+      + '<div style="text-align:right;">'
+      + '<p style="font-size:16px;font-weight:800;color:#16a34a;margin:0;">₹' + (o.total||0) + '</p>'
+      + '<p style="font-size:10px;color:#9ca3af;margin:2px 0 0;">' + (o.date||'') + '</p>'
+      + '</div></div>'
+      + '<div style="background:#f9fafb;border-radius:8px;padding:8px 10px;margin-bottom:8px;">'
+      + '<p style="font-size:11px;color:#374151;margin:0 0 4px;font-weight:600;">📍 ' + (o.addr||'') + '</p>'
+      + '<p style="font-size:11px;color:#6b7280;margin:0;">' + (o.items||'') + '</p>'
+      + '</div>'
+      + '<button onclick="replyOrder(\'' + encodeURIComponent(o.phone||'') + '\',\'' + encodeURIComponent(o.name||'') + '\')" '
+      + 'style="width:100%;background:#dcfce7;color:#166534;border:none;padding:8px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">💬 Reply on WhatsApp</button>'
+      + '</div>';
+  }).join('');
+}
+
+function replyOrder(phone, name) {
+  var msg = 'Hi ' + decodeURIComponent(name) + '! Your order from Jeswanth Fashion Hub is confirmed. We will contact you soon for delivery. Thank you! 🙏';
+  window.open('https://wa.me/' + cfg.wa.replace(/\D/g,'') + '?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function exportOrders() {
+  if (!orders.length) { showToast('No orders to export'); return; }
+  var csv = 'Date,Name,Phone,Address,Items,Total\n'
+    + orders.map(function(o){
+        return [o.date,o.name,o.phone,'"'+o.addr+'"','"'+o.items+'"',o.total].join(',');
+      }).join('\n');
+  var blob = new Blob([csv], {type:'text/csv'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'jeswanth_orders.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('📥 Orders exported!');
 }
 
 function renderAdminFeedbacks() {
-  document.getElementById('fbList').innerHTML = feedbacks.length===0
-    ? '<p class="text-center text-gray-400 py-14 text-sm">No feedback yet</p>'
-    : feedbacks.slice().reverse().map(f=>`
-    <div class="bg-white p-4 rounded shadow-sm">
-      <div class="flex justify-between mb-1">
-        <p class="font-semibold text-sm">${f.name}</p>
-        <span class="text-gold text-sm">${'★'.repeat(f.rating)}</span>
-      </div>
-      <p class="text-xs text-gray-500 mb-1">${f.phone||''} · ${f.date}</p>
-      <p class="text-xs text-gray-700 leading-relaxed">${f.msg}</p>
-    </div>
-  `).join('');
+  var el = document.getElementById('fbList');
+  if (!el) return;
+  if (!feedbacks.length) {
+    el.innerHTML = '<div style="text-align:center;padding:40px 0;color:#9ca3af;"><div style="font-size:40px;margin-bottom:8px;">⭐</div><p>No reviews yet</p></div>';
+    return;
+  }
+  el.innerHTML = feedbacks.slice().reverse().map(function(f) {
+    return '<div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:14px;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">'
+      + '<div style="display:flex;align-items:center;gap:8px;">'
+      + '<div style="width:32px;height:32px;border-radius:50%;background:#800020;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">' + (f.name||'?')[0] + '</div>'
+      + '<div><p style="font-size:13px;font-weight:700;margin:0;">' + (f.name||'') + '</p>'
+      + '<p style="font-size:10px;color:#9ca3af;margin:0;">' + (f.phone||'') + ' · ' + (f.date||'') + '</p></div>'
+      + '</div>'
+      + '<span style="color:#C9A84C;font-size:14px;">' + '★'.repeat(f.rating||5) + '</span>'
+      + '</div>'
+      + '<p style="font-size:12px;color:#374151;line-height:1.6;margin:0;background:#f9fafb;padding:8px 10px;border-radius:8px;">"' + (f.msg||'') + '"</p>'
+      + '</div>';
+  }).join('');
 }
 
 function saveSettings() {
@@ -2040,22 +2259,33 @@ function updateUI() {
 // ── Product CRUD ──
 function openProdModal(id) {
   id = (id !== undefined && id !== null) ? String(id) : null;
-
-  // Reset state
   tempImgs = [];
 
-  // Clear all form fields safely
   var fields = ['imgGrid','prodImgUrls','driveLoadStatus','folderHelp',
-                'prodName','prodPrice','prodDesc','prodColors','editId'];
+                'prodName','prodPrice','prodMRP','prodDesc','prodColors',
+                'prodFabric','prodFit','prodStock','aiKeywords','editId'];
   fields.forEach(function(fid) {
     var el = document.getElementById(fid);
     if (!el) return;
-    if (fid === 'imgGrid' || fid === 'folderHelp') { el.innerHTML = ''; el.classList.add('hidden'); }
-    else if (fid === 'driveLoadStatus') { el.textContent = ''; el.classList.add('hidden'); }
+    if (fid === 'imgGrid' || fid === 'folderHelp') { el.innerHTML = ''; if(el.classList) el.classList.add('hidden'); }
+    else if (fid === 'driveLoadStatus') { el.textContent = ''; if(el.classList) el.classList.add('hidden'); }
     else el.value = '';
   });
+
+  // Reset selects and checkboxes
+  var catEl = document.getElementById('prodCategory');
+  if (catEl) catEl.value = '';
+  var badgeEl = document.getElementById('prodBadge');
+  if (badgeEl) badgeEl.value = '';
+  var codEl = document.getElementById('prodCOD');
+  if (codEl) codEl.checked = true;
+  var repEl = document.getElementById('prodReplacement');
+  if (repEl) repEl.checked = true;
+
   var up = document.getElementById('uploadProgress');
   if (up) up.style.display = 'none';
+  var aiStatus = document.getElementById('aiGenStatus');
+  if (aiStatus) aiStatus.style.display = 'none';
 
   document.getElementById('editId').value = id || '';
   document.getElementById('prodModalTitle').textContent = id ? 'Edit Product' : 'Add Product';
@@ -2063,15 +2293,28 @@ function openProdModal(id) {
   if (id) {
     var p = products.find(function(x){ return String(x.id) === id; });
     if (!p) { showToast('Product not found!'); return; }
-    document.getElementById('prodName').value   = p.name  || '';
-    document.getElementById('prodPrice').value  = p.price || '';
-    document.getElementById('prodDesc').value   = p.desc  || '';
+    document.getElementById('prodName').value   = p.name   || '';
+    document.getElementById('prodPrice').value  = p.price  || '';
+    var mrpEl = document.getElementById('prodMRP');
+    if (mrpEl) mrpEl.value = p.mrp || '';
+    document.getElementById('prodDesc').value   = p.desc   || '';
     document.getElementById('prodColors').value = p.colors ? p.colors.join(', ') : '';
+    var fabricEl = document.getElementById('prodFabric');
+    if (fabricEl) fabricEl.value = p.fabric || '';
+    var fitEl = document.getElementById('prodFit');
+    if (fitEl) fitEl.value = p.fit || '';
+    var stockEl = document.getElementById('prodStock');
+    if (stockEl) stockEl.value = p.stock != null ? p.stock : '';
+    if (catEl) catEl.value = p.category || '';
+    if (badgeEl) badgeEl.value = p.badge || '';
+    if (codEl) codEl.checked = p.cod !== false;
+    if (repEl) repEl.checked = p.replacement !== false;
     if (p.images && p.images.length) {
-      tempImgs = p.images.map(function(u){
-        return typeof u === 'string' ? u : (u.url || u.preview || '');
-      }).filter(Boolean);
+      tempImgs = p.images.map(function(u){ return typeof u === 'string' ? u : (u.url||u.preview||''); }).filter(Boolean);
       renderImgGrid();
+      // Also show links in textarea so admin can see/edit them
+      var urlBox = document.getElementById('prodImgUrls');
+      if (urlBox) urlBox.value = tempImgs.join('\n');
     }
   }
   showModal('prodModal');
@@ -2085,10 +2328,7 @@ function handleUpload(event) {
   files.forEach(function(file) {
     if (!file.type.startsWith('image/')) return;
     var reader = new FileReader();
-    reader.onload = function(e) {
-      tempImgs.push(e.target.result); // store base64 string directly
-      renderImgGrid();
-    };
+    reader.onload = function(e) { tempImgs.push(e.target.result); renderImgGrid(); };
     reader.readAsDataURL(file);
   });
   event.target.value = '';
@@ -2096,14 +2336,34 @@ function handleUpload(event) {
 
 function renderImgGrid() {
   var grid = document.getElementById('imgGrid');
-  grid.classList.remove('hidden');
+  if (!grid) return;
+  grid.style.display = tempImgs.length ? 'grid' : 'none';
   if (!tempImgs.length) { grid.innerHTML = ''; return; }
+
+  // Show count
+  var countLabel = document.getElementById('imgGridCount');
+  if (!countLabel) {
+    countLabel = document.createElement('p');
+    countLabel.id = 'imgGridCount';
+    countLabel.style.cssText = 'font-size:10px;color:#6b7280;margin:4px 0 6px;font-weight:600;';
+    grid.parentNode.insertBefore(countLabel, grid);
+  }
+  countLabel.textContent = tempImgs.length + ' image' + (tempImgs.length > 1 ? 's' : '') + ' added';
+
   grid.innerHTML = tempImgs.map(function(item, i) {
     var src = typeof item === 'string' ? item : (item.preview || item.url || '');
-    return '<div style="position:relative;">'
-      + '<img src="' + src + '" style="width:100%;height:72px;object-fit:cover;border-radius:4px;border:1px solid #e5e7eb;" onerror="this.src=\'https://via.placeholder.com/72x72?text=Error\'">'
-      + '<button type="button" onclick="tempImgs.splice(' + i + ',1);renderImgGrid()" '
-      + 'style="position:absolute;top:0;right:0;background:#ef4444;color:#fff;border:none;width:20px;height:20px;font-size:13px;cursor:pointer;border-radius:0 4px 0 4px;line-height:1;">✕</button>'
+    // Show short filename from URL
+    var label = src.split('/').pop().split('?')[0];
+    if (label.length > 22) label = label.substring(0, 20) + '…';
+    return '<div style="position:relative;border:1.5px solid #e5e7eb;border-radius:8px;overflow:hidden;background:#f5f0eb;">'
+      + '<img src="' + src + '" style="width:100%;height:80px;object-fit:cover;display:block;" '
+      + 'onerror="this.parentNode.style.background=\'#fee2e2\';this.style.display=\'none\';" '
+      + 'title="' + src + '">'
+      + '<div style="padding:3px 5px;font-size:9px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:#fff;border-top:1px solid #e5e7eb;">'
+      + (i + 1) + '. ' + label
+      + '</div>'
+      + '<button type="button" onclick="tempImgs.splice(' + i + ',1);document.getElementById(\'prodImgUrls\').value=tempImgs.join(\'\\n\');renderImgGrid();" '
+      + 'style="position:absolute;top:4px;right:4px;background:rgba(239,68,68,.9);color:#fff;border:none;width:20px;height:20px;font-size:12px;cursor:pointer;border-radius:50%;line-height:1;display:flex;align-items:center;justify-content:center;">✕</button>'
       + '</div>';
   }).join('');
 }
@@ -2112,9 +2372,16 @@ async function saveProduct() {
   var id     = document.getElementById('editId').value.trim();
   var name   = document.getElementById('prodName').value.trim();
   var price  = parseInt(document.getElementById('prodPrice').value);
+  var mrp    = parseInt(document.getElementById('prodMRP') ? document.getElementById('prodMRP').value : '') || 0;
   var desc   = document.getElementById('prodDesc').value.trim();
-  var colors = document.getElementById('prodColors').value
-    .split(',').map(function(c){ return c.trim(); }).filter(Boolean);
+  var colors = document.getElementById('prodColors').value.split(',').map(function(c){ return c.trim(); }).filter(Boolean);
+  var fabric = document.getElementById('prodFabric') ? document.getElementById('prodFabric').value.trim() : '';
+  var fit    = document.getElementById('prodFit') ? document.getElementById('prodFit').value.trim() : '';
+  var stock  = document.getElementById('prodStock') ? document.getElementById('prodStock').value.trim() : '';
+  var category = document.getElementById('prodCategory') ? document.getElementById('prodCategory').value : '';
+  var badge  = document.getElementById('prodBadge') ? document.getElementById('prodBadge').value : '';
+  var cod    = document.getElementById('prodCOD') ? document.getElementById('prodCOD').checked : true;
+  var replacement = document.getElementById('prodReplacement') ? document.getElementById('prodReplacement').checked : true;
 
   if (!name)  { showToast('Please enter product name!');  return; }
   if (!price) { showToast('Please enter product price!'); return; }
@@ -2124,43 +2391,52 @@ async function saveProduct() {
     return typeof item === 'string' ? item : (item.url || item.preview || '');
   }).filter(Boolean);
 
-  // Also get any pasted URLs from textarea
+  // Also get any pasted URLs from textarea (split by newline OR comma)
   var boxVal = document.getElementById('prodImgUrls').value;
   if (boxVal.trim()) {
-    boxVal.split('\n').forEach(function(u){
+    boxVal.split(/[\n,]+/).forEach(function(u){
       u = driveToImg(u.trim());
       if (u) images.push(u);
     });
   }
-
   if (!images.length) images = ['https://via.placeholder.com/400x300?text=No+Image'];
 
-  // Sheet only gets real URLs (no base64 — too large)
   var sheetImgs = images.filter(function(u){ return u && !u.startsWith('data:'); });
   if (!sheetImgs.length) sheetImgs = ['no-image'];
 
-  var prodData = { name:name, price:price, desc:desc, colors:colors, images:images };
+  var prodData = {
+    name:name, price:price, mrp:mrp||Math.round(price*1.3), desc:desc,
+    colors:colors, images:images, fabric:fabric, fit:fit,
+    stock: stock !== '' ? Number(stock) : null,
+    category:category, badge:badge, cod:cod, replacement:replacement
+  };
 
   if (id) {
     var idx = products.findIndex(function(p){ return String(p.id) === id; });
     if (idx === -1) { showToast('Product not found!'); return; }
     products[idx] = Object.assign({}, products[idx], prodData);
-    await apiCall({ action:'SAVE_PRODUCT', id:id, name:name, price:price, desc:desc,
-                    colors:colors.join(','), images:sheetImgs.join(',') });
+    await apiCall({ action:'SAVE_PRODUCT', id:id, name:name, price:price, mrp:prodData.mrp,
+                    desc:desc, colors:colors.join(','), images:sheetImgs.join(','),
+                    category:category, stock:stock, cod:cod?'yes':'no',
+                    replacement:replacement?'yes':'no', badge:badge, fabric:fabric, fit:fit });
   } else {
     var newId = products.length
       ? Math.max.apply(null, products.map(function(p){ return Number(p.id) || 0; })) + 1
       : 1;
     products.push(Object.assign({ id: newId }, prodData));
-    await apiCall({ action:'SAVE_PRODUCT', name:name, price:price, desc:desc,
-                    colors:colors.join(','), images:sheetImgs.join(',') });
+    await apiCall({ action:'SAVE_PRODUCT', name:name, price:price, mrp:prodData.mrp,
+                    desc:desc, colors:colors.join(','), images:sheetImgs.join(','),
+                    category:category, stock:stock, cod:cod?'yes':'no',
+                    replacement:replacement?'yes':'no', badge:badge, fabric:fabric, fit:fit });
   }
 
   saveProducts();
   closeProdModal();
   renderProdTable();
   renderShop();
-  showToast('Product saved ✓');
+  renderFeatured();
+  updateAdminStats();
+  showToast('✓ Product saved!');
 }
 
 function editProd(id) { openProdModal(String(id)); }
@@ -2273,10 +2549,15 @@ async function uploadToImgbb(event) {
   event.target.value = '';
 }
 function previewDriveLinks() {
-  var lines = document.getElementById('prodImgUrls').value
-    .split('\n').map(function(u){ return driveToImg(u.trim()); }).filter(Boolean);
+  var raw = document.getElementById('prodImgUrls').value;
 
-  if (!lines.length) { showToast('Paste at least one Drive link!'); return; }
+  // Split by newline OR comma — handles both paste styles
+  var lines = raw
+    .split(/[\n,]+/)
+    .map(function(u){ return driveToImg(u.trim()); })
+    .filter(Boolean);
+
+  if (!lines.length) { showToast('Paste at least one image link!'); return; }
 
   lines.forEach(function(url) {
     if (!tempImgs.includes(url)) tempImgs.push(url);
@@ -2363,28 +2644,47 @@ function openProdDetail(pid) {
   pdSelColor = (p.colors && p.colors[0]) || 'Any';
   pdSelSize = 'M';
 
-  var imgs  = (p.images && p.images.length) ? p.images : [];
-  var desc  = (p.desc || '').toLowerCase();
-  var isKid = desc.includes('kids') || p.name.toLowerCase().includes('kids');
-  var origPrice = Math.round(p.price * 1.3);
+  var imgs     = (p.images && p.images.length) ? p.images : [];
+  var desc     = (p.desc || '').toLowerCase();
+  var isKid    = desc.includes('kids') || (p.category||'').includes('kids') || p.name.toLowerCase().includes('kids');
+
+  // Use admin-set MRP if available, else auto-calculate
+  var origPrice = (p.mrp && p.mrp > p.price) ? p.mrp : Math.round(p.price * 1.3);
   var discount  = Math.round(((origPrice - p.price) / origPrice) * 100);
 
   // Urgency / viewer count (deterministic per product)
-  var hash    = String(p.id).split('').reduce(function(a,c){ return a+c.charCodeAt(0); },0);
-  var viewers = 8 + (hash % 17);
-  var stock   = 3 + (hash % 8);
+  var hash     = String(p.id).split('').reduce(function(a,c){ return a+c.charCodeAt(0); }, 0);
+  var viewers  = 8 + (hash % 17);
 
-  // Specs table
-  var fabric  = isKid ? 'Soft Cotton Blend' : (desc.includes('lycra')?'Lycra Stretch':desc.includes('denim')?'Denim':desc.includes('cotton')?'100% Cotton':'Premium Fabric');
-  var fit     = isKid ? 'Regular Fit' : (desc.includes('slim')?'Slim Fit':desc.includes('loose')?'Loose Fit':'Regular Fit');
-  var style   = isKid ? 'Casual / Everyday' : (desc.includes('formal')?'Formal':'Casual / Semi-Formal');
+  // Real stock from admin, fallback to fake urgency
+  var realStock   = (p.stock != null && p.stock !== '') ? Number(p.stock) : null;
+  var stockUrgent = realStock !== null
+    ? (realStock === 0
+        ? '<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#dc2626;font-weight:700;">❌ Out of Stock</div>'
+        : (realStock <= 5
+            ? '<div style="background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#991b1b;font-weight:600;">⚠️ Only <strong>' + realStock + ' left</strong> in stock — order soon!</div>'
+            : '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#166534;font-weight:600;">✅ In Stock (' + realStock + ' available)</div>'))
+    : '<div style="background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#991b1b;font-weight:600;">⚠️ Only <strong>' + (3 + (hash % 8)) + ' left</strong> in stock — order soon!</div>';
 
-  // Highlights
+  // COD & Replacement from admin settings
+  var showCOD     = p.cod !== false;
+  var showReplace = p.replacement !== false;
+  var codText     = showCOD ? '💵 Cash on Delivery Available' : '💳 Prepaid Only (Online Payment)';
+  var replaceText = showReplace ? '🔄 Easy 7-day Replacement' : '⚠️ No Replacement on this item';
+
+  // Fabric & fit — use admin fields first, fallback to auto-detect
+  var fabric = p.fabric || (isKid ? 'Soft Cotton Blend' : (desc.includes('lycra')?'Lycra Stretch':desc.includes('denim')?'Denim':desc.includes('cotton')?'100% Cotton':'Premium Fabric'));
+  var fit    = p.fit    || (isKid ? 'Regular Fit' : (desc.includes('slim')?'Slim Fit':desc.includes('loose')?'Loose Fit':'Regular Fit'));
+  var style  = isKid ? 'Casual / Everyday' : (desc.includes('formal')?'Formal':'Casual / Semi-Formal');
+
+  // Highlights — use fabric/fit fields if set
   var highlights = isKid
     ? ['Kid-Safe Soft Fabric','Fun & Bright Colours','Stretchable & Comfy','Easy Machine Wash']
     : ['Soft & Breathable Fabric','Multiple Colour Options','Great for Daily Wear','Easy to Wash & Maintain'];
-  if (desc.includes('cotton')) highlights[0] = '100% Pure Cotton';
-  if (desc.includes('slim'))   highlights.push('Slim Fit Design');
+  if (fabric.toLowerCase().includes('cotton')) highlights[0] = fabric + ' Fabric';
+  if (fit.toLowerCase().includes('slim'))      highlights.push('Slim Fit Design');
+  if (showCOD)     highlights.push('Cash on Delivery Available');
+  if (showReplace) highlights.push('Easy 7-Day Replacement');
 
   // Sample reviews (based on hash so consistent)
   var REVIEW_POOL = [
@@ -2491,8 +2791,8 @@ function openProdDetail(pid) {
     + '<div style="background:#fff8f0;border-radius:10px;padding:12px 14px;margin-bottom:12px;">'
     + '<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">'
     + '<span style="font-size:26px;font-weight:900;color:#800020;">₹' + p.price + '</span>'
-    + '<span style="font-size:14px;color:#9ca3af;text-decoration:line-through;">₹' + origPrice + '</span>'
-    + '<span class="discount-tag">' + discount + '% OFF</span>'
+    + '<span style="font-size:14px;color:#9ca3af;text-decoration:line-through;">₹' + realMRP + '</span>'
+    + '<span class="discount-tag">' + realDiscount + '% OFF</span>'
     + '</div>'
     + '<p style="font-size:11px;color:#9ca3af;margin:4px 0 0;">Inclusive of all taxes</p>'
     + '</div>'
@@ -2502,15 +2802,18 @@ function openProdDetail(pid) {
     + '<span class="urgency-dot viewer-dot"></span>'
     + '<span><strong>' + viewers + ' people</strong> are viewing this right now!</span>'
     + '</div>'
-    + '<div style="background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#991b1b;font-weight:600;">'
-    + '⚠️ Only <strong>' + stock + ' left</strong> in stock — order soon!'
-    + '</div>'
+    + (realStock !== null
+        ? (realStock <= 3
+            ? '<div style="background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#991b1b;font-weight:600;">⚠️ Only <strong>' + realStock + ' left</strong> in stock!</div>'
+            : '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#166534;font-weight:600;">✅ In Stock — <strong>' + realStock + ' units</strong> available</div>')
+        : '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#166534;font-weight:600;">✅ In Stock — Ready to ship</div>'
+      )
 
-    // ── Delivery info ──
+    // ── Delivery info (real COD & replacement from admin) ──
     + '<div class="delivery-box">'
     + '<p class="free">🚚 FREE Delivery — Tomorrow by 8 PM</p>'
-    + '<p class="cod">💵 Cash on Delivery Available</p>'
-    + '<p style="font-size:11px;color:#047857;margin-top:3px!important;">🔄 Easy 7-day exchange policy</p>'
+    + (realCOD ? '<p class="cod">💵 Cash on Delivery Available</p>' : '<p style="font-size:11px;color:#b45309;margin-top:3px!important;">💳 Online / Prepaid Payment Only</p>')
+    + (realReplace ? '<p style="font-size:11px;color:#047857;margin-top:3px!important;">🔄 Easy 7-day replacement policy</p>' : '<p style="font-size:11px;color:#9ca3af;margin-top:3px!important;">No replacement for this item</p>')
     + '</div>'
 
     // ── Colours ──
@@ -2533,14 +2836,16 @@ function openProdDetail(pid) {
 
     + '</div>'  // close padding div
 
-    // ── Product Specifications ──
+    // ── Product Specifications (real values from admin) ──
     + '<div style="background:#fff;border-top:8px solid #f5f0eb;padding:16px;">'
     + '<p style="font-size:13px;font-weight:800;color:#1A1A1A;margin:0 0 10px;letter-spacing:.01em;">📋 Product Details</p>'
     + '<table class="spec-table">'
-    + '<tr><td>Fabric</td><td>' + fabric + '</td></tr>'
-    + '<tr><td>Fit</td><td>' + fit + '</td></tr>'
-    + '<tr><td>Style</td><td>' + style + '</td></tr>'
-    + '<tr><td>Category</td><td>' + (isKid ? 'Kids Wear' : 'Men\'s Wear') + '</td></tr>'
+    + (realFabric ? '<tr><td>Fabric</td><td>' + realFabric + '</td></tr>' : '')
+    + (realFit    ? '<tr><td>Fit</td><td>' + realFit + '</td></tr>' : '')
+    + '<tr><td>Style</td><td>' + realStyle + '</td></tr>'
+    + '<tr><td>Category</td><td>' + realCat + '</td></tr>'
+    + '<tr><td>COD</td><td>' + (realCOD ? '✅ Available' : '❌ Not Available') + '</td></tr>'
+    + '<tr><td>Replacement</td><td>' + (realReplace ? '✅ 7-day policy' : '❌ Not Available') + '</td></tr>'
     + '<tr><td>Brand</td><td>Jeswanth Fashion Hub</td></tr>'
     + '<tr><td>Origin</td><td>Chennai, India</td></tr>'
     + '</table></div>'
@@ -2678,53 +2983,168 @@ function confirmOrder() {
   placeOrder();
 }
 
-// ── AI GENERATE in Admin ──
+// ── AI GENERATE — Smart Local Generator (works offline, no API needed) ──
 async function aiGenerateProduct() {
-  var keywords = document.getElementById('aiKeywords').value.trim();
-  if (!keywords) { showToast('Enter some keywords first!'); return; }
+  var keywords = document.getElementById('aiKeywords').value.trim().toLowerCase();
+  if (!keywords) { showToast('Enter keywords first! e.g. cotton shirt, kids dress'); return; }
 
-  var btn = document.getElementById('aiGenBtn');
+  var btn    = document.getElementById('aiGenBtn');
   var status = document.getElementById('aiGenStatus');
   btn.disabled = true;
   btn.innerHTML = '<span>⏳</span> Generating…';
   status.style.display = 'block';
-  status.textContent = 'AI is creating product details…';
+  status.style.color   = '#7c3aed';
+  status.textContent   = 'Creating product details…';
+
+  // Small delay for UX feel
+  await new Promise(function(r){ setTimeout(r, 700); });
 
   try {
-    var response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 400,
-        messages: [{
-          role: 'user',
-          content: 'You are a product copywriter for Jeswanth Fashion Hub, a clothing shop in Chennai, India. Based on these keywords: "' + keywords + '", generate a product name, short description (2 sentences max, sales-focused), and colors. Reply ONLY with JSON: {"name":"...","desc":"...","colors":"Black, Blue, White"}. No markdown, no extra text.'
-        }]
-      })
-    });
+    // ── Detect type from keywords ──
+    var isKids       = /kid|child|boy|girl|baby|toddler|junior/.test(keywords);
+    var isWatch      = /watch|wrist|analog|digital watch|timepiece/.test(keywords);
+    var isBelt       = /belt|strap|waist belt|leather belt/.test(keywords);
+    var isShoes      = /shoe|sandal|slipper|chappal|sneaker|loafer|boot|footwear|floater/.test(keywords);
+    var isSunglass   = /sunglass|shade|goggle|eyewear|uv/.test(keywords);
+    var isCap        = /cap|hat|headwear/.test(keywords);
+    var isWallet     = /wallet|purse/.test(keywords);
+    var isSocks      = /sock|innerwear|underwear|brief|vest/.test(keywords);
+    var isAccessory  = /accessory|accessories|keychain|bracelet|chain|necklace|ring|earring|scarf/.test(keywords);
+    var isShirt      = /shirt|formal|check|half sleeve|full sleeve/.test(keywords);
+    var isTshirt     = /t.shirt|tshirt|tee|polo|round neck/.test(keywords);
+    var isJeans      = /jean|denim|pant|trouser|bottom/.test(keywords);
+    var isTrack      = /track|lycra|sport|gym|jogger/.test(keywords);
+    var isDress      = /dress|frock|skirt|ethnic|kurti/.test(keywords);
+    var isCotton     = /cotton|soft|breathable/.test(keywords);
+    var isSlim       = /slim|fit|skinny/.test(keywords);
+    var isLeather    = /leather|genuine|pu leather/.test(keywords);
+    var colorHint    = keywords.match(/black|white|blue|red|green|yellow|navy|grey|gray|pink|orange|brown|purple|maroon|golden|silver/);
 
-    var data = await response.json();
-    var text = (data.content && data.content[0] && data.content[0].text) || '';
-    // Clean up possible markdown fences
-    text = text.replace(/```json|```/g, '').trim();
-    var parsed = JSON.parse(text);
+    // ── Name pool ──
+    var NAME_POOL = {
+      watch:      ['Men\'s Analogue Wrist Watch','Stylish Casual Watch','Premium Digital Watch','Classic Round Dial Watch','Elegant Leather Strap Watch'],
+      belt:       ['Men\'s Genuine Leather Belt','Premium Formal Belt','Casual Reversible Belt','Classic Pin Buckle Belt','Slim Fit Leather Belt'],
+      shoes:      ['Men\'s Casual Sneakers','Comfortable Daily Wear Shoes','Stylish Loafers','Premium Leather Footwear','Trendy Sports Shoes'],
+      sandal:     ['Men\'s Daily Wear Sandals','Comfortable Rubber Slippers','Premium Leather Sandals','Casual Floaters','Everyday Flip Flops'],
+      sunglass:   ['UV Protection Sunglasses','Stylish Polarized Shades','Premium Wayfarer Sunglasses','Classic Aviator Shades','Trendy Sports Sunglasses'],
+      cap:        ['Men\'s Casual Sports Cap','Stylish Baseball Cap','Classic Cotton Cap','Trendy Snapback Cap','Premium Polo Cap'],
+      wallet:     ['Men\'s Leather Bi-Fold Wallet','Slim Card Holder Wallet','Premium RFID Wallet','Casual Zip Wallet','Classic Purse Wallet'],
+      socks:      ['Men\'s Cotton Ankle Socks','Comfortable Daily Wear Socks','Premium Sports Socks','Soft Loafer Socks (3-Pack)','Casual Multi-Colour Socks'],
+      innerwear:  ['Men\'s Cotton Brief (3-Pack)','Comfortable Trunk Innerwear','Premium Vest & Brief Combo','Soft Cotton Boxers','Daily Wear Innerwear Set'],
+      accessory:  ['Premium Stainless Bracelet','Men\'s Stylish Chain','Classic Fashion Ring','Trendy Keychain Set','Daily Wear Accessory'],
+      shirt:      ['Premium Casual Shirt','Classic Cotton Shirt','Men\'s Stylish Check Shirt','Everyday Formal Shirt','Comfortable Half-Sleeve Shirt'],
+      tshirt:     ['Men\'s Cotton Round-Neck T-Shirt','Solid Colour Polo T-Shirt','Casual Comfort T-Shirt','Premium Half-Sleeve Tee','Everyday Stretch Tee'],
+      jeans:      ['Men\'s Slim-Fit Denim Jeans','Stretchable Casual Jeans','Classic Dark-Wash Jeans','Regular Fit Comfort Jeans','Trendy Skinny Jeans'],
+      track:      ['Lycra Comfort Track Pant','Men\'s Gym Jogger Pant','Soft Sports Track Pant','Daily Wear Lycra Pant','Stretchable Athletic Jogger'],
+      kids:       ['Kids Printed Cotton T-Shirt','Boys Casual Shirt','Girls Frock & Dress Set','Kids Cotton Comfortable Set','Cute Kids Daily-Wear Top'],
+      dress:      ['Women\'s Casual Kurti','Ethnic Printed Dress','Comfortable Cotton Dress','Stylish Daily-Wear Dress','Festival Special Kurti'],
+      default:    ['Fashion Hub Special','Trending Style Pick','Jeswanth Premium Item','Popular Daily-Use Item','Best Seller Product']
+    };
 
-    if (parsed.name)   document.getElementById('prodName').value   = parsed.name;
-    if (parsed.desc)   document.getElementById('prodDesc').value   = parsed.desc;
-    if (parsed.colors) document.getElementById('prodColors').value = parsed.colors;
+    // ── Description pool ──
+    var DESC_POOL = {
+      watch:      'Stylish and accurate wristwatch designed for everyday wear. Scratch-resistant dial, comfortable strap, and a classic look that suits all occasions.',
+      belt:       'Premium quality belt crafted for durability and style. Smooth buckle, clean finish, and available in multiple sizes — perfect for formal and casual wear.',
+      shoes:      'Comfortable and stylish footwear for all-day use. Lightweight sole, breathable material, and a modern design that goes with any outfit.',
+      sandal:     'Comfortable daily-wear sandals with soft cushioned sole. Durable straps and easy slip-on design — ideal for home, outings, and casual use.',
+      sunglass:   '100% UV400 protection sunglasses with a stylish frame. Lightweight, scratch-resistant lens, and available in trending frame styles — perfect for outdoor use.',
+      cap:        'Comfortable and stylish cap for everyday wear. Adjustable strap, breathable fabric, and a classic design that suits all face shapes.',
+      wallet:     'Slim and durable wallet with multiple card slots and a clean finish. Compact design fits easily in pockets — ideal for daily use.',
+      socks:      'Soft and breathable cotton socks for all-day comfort. Strong elastic, smooth toe seam, and available in multi-colour packs for great value.',
+      innerwear:  'Premium soft cotton innerwear for all-day comfort. Stretchable waistband, breathable fabric, and a comfortable fit — trusted daily essential.',
+      accessory:  'Trendy and durable accessory that completes your look. Premium finish, comfortable to wear, and great for gifting too.',
+      shirt:      'High-quality cotton shirt designed for all-day comfort. Perfect for casual outings, office wear, and festive occasions — soft, breathable, and easy to style.',
+      tshirt:     'Soft and comfortable cotton T-shirt for everyday wear. Made with breathable fabric that keeps you cool — ideal for casual use, travel, and daily activities.',
+      jeans:      'Stretchable and stylish denim jeans with a clean modern fit. Durable fabric with comfortable stretch — great for casual outings and everyday use.',
+      track:      'Super-comfortable lycra track pant for sports, gym, and daily lounging. Soft elastic waistband, easy to move, and available in multiple colours.',
+      kids:       'Soft and safe fabric specially designed for kids\' sensitive skin. Bright colours, comfortable fit, and easy to wash — perfect for school and everyday play.',
+      dress:      'Elegant and comfortable dress perfect for festivals and everyday wear. Premium fabric with beautiful design — flattering fit for all occasions.',
+      default:    'Quality product from Jeswanth Fashion Hub, T.Nagar Chennai. Comfortable, durable, and excellent value — a trusted choice for the whole family.'
+    };
+
+    // ── Color pool ──
+    var COLOR_POOL = {
+      watch:      'Black, Brown, Silver, Gold',
+      belt:       'Black, Brown, Tan',
+      shoes:      'Black, Brown, White, Navy',
+      sandal:     'Black, Brown, Blue, Red',
+      sunglass:   'Black, Brown, Blue, Red, Silver',
+      cap:        'Black, Navy, Grey, Red, White',
+      wallet:     'Black, Brown, Tan',
+      socks:      'Black, White, Grey, Navy (Multi-Pack)',
+      innerwear:  'Black, White, Grey, Blue (Multi-Pack)',
+      accessory:  'Silver, Gold, Black',
+      shirt:      'White, Blue, Black, Navy, Grey',
+      tshirt:     'Black, White, Red, Navy, Green',
+      jeans:      'Blue, Black, Dark Grey, Navy',
+      track:      'Black, Navy, Dark Green, Maroon',
+      kids:       'Red, Yellow, Blue, Green, Pink',
+      dress:      'Red, Blue, Green, Yellow, Black',
+      default:    'Black, Blue, White, Red'
+    };
+
+    // ── Determine type ──
+    var type =
+      isWatch     ? 'watch'     :
+      isBelt      ? 'belt'      :
+      (isShoes && /sandal|slipper|chappal|floater/.test(keywords)) ? 'sandal' :
+      isShoes     ? 'shoes'     :
+      isSunglass  ? 'sunglass'  :
+      isCap       ? 'cap'       :
+      isWallet    ? 'wallet'    :
+      isSocks     ? ((/sock/.test(keywords)) ? 'socks' : 'innerwear') :
+      isAccessory ? 'accessory' :
+      isKids      ? 'kids'      :
+      isShirt     ? 'shirt'     :
+      isTshirt    ? 'tshirt'    :
+      isJeans     ? 'jeans'     :
+      isTrack     ? 'track'     :
+      isDress     ? 'dress'     :
+                    'default';
+
+    var namePool  = NAME_POOL[type]  || NAME_POOL.default;
+    var baseDesc  = DESC_POOL[type]  || DESC_POOL.default;
+    var baseColors= COLOR_POOL[type] || COLOR_POOL.default;
+
+    // Pick name consistently using hash
+    var hash = keywords.split('').reduce(function(a,c){ return a + c.charCodeAt(0); }, 0);
+    var name = namePool[hash % namePool.length];
+
+    // Enhance name with detected attributes
+    if (isCotton  && !name.includes('Cotton'))  name = '100% Cotton ' + name;
+    if (isSlim    && !name.includes('Slim'))    name = name.replace('Casual','Slim Fit');
+    if (isLeather && !name.includes('Leather')) name = name.replace('Premium','Genuine Leather');
+    if (isKids    && !name.includes('Kids'))    name = 'Kids ' + name;
+
+    // Enhance description
+    var desc = baseDesc;
+    if (isCotton)  desc = desc.replace('fabric', '100% pure cotton fabric');
+    if (isLeather) desc = desc.replace('material', 'genuine leather material');
+
+    // Inject color hint if given
+    var colors = baseColors;
+    if (colorHint) {
+      var hintColor = colorHint[0].charAt(0).toUpperCase() + colorHint[0].slice(1);
+      if (!colors.toLowerCase().includes(hintColor.toLowerCase())) colors = hintColor + ', ' + colors;
+    }
+
+    // Fill form
+    document.getElementById('prodName').value   = name;
+    document.getElementById('prodDesc').value   = desc;
+    document.getElementById('prodColors').value = colors;
 
     status.textContent = '✓ Done! Review and edit if needed.';
     status.style.color = '#16a34a';
-    showToast('✨ AI filled product details!');
+    showToast('✨ Product details filled!');
+
   } catch(err) {
-    status.textContent = '✗ Failed. Check your connection.';
+    status.textContent = '✗ Something went wrong. Try again.';
     status.style.color = '#dc2626';
   }
 
   btn.disabled = false;
   btn.innerHTML = '<span>✨</span> Generate Name, Description & Tags';
-  setTimeout(function() { status.style.display = 'none'; status.style.color = '#7c3aed'; }, 4000);
+  setTimeout(function(){ status.style.display = 'none'; status.style.color = '#7c3aed'; }, 4000);
 }
 </script>
 </body>
