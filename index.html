@@ -228,7 +228,7 @@ const THEMES={
   <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-12 text-center">
     <p class="section-label text-gold fade-up delay-1">EST. 2019 · T. NAGAR, CHENNAI</p>
     <h1 class="font-display text-4xl sm:text-6xl md:text-7xl font-semibold leading-tight mb-4 fade-up delay-2">
-      Style for Every<br>Man &amp; Child.
+      Style for Every<br>Man &amp; Kid's.
     </h1>
     <p class="text-gray-300 text-sm sm:text-lg font-light mb-7 max-w-xl mx-auto fade-up delay-3">
       Chennai's most trusted family fashion destination — affordable, trendy &amp; quality clothing since 2019.
@@ -303,7 +303,7 @@ const THEMES={
           Founded in 2019, Jeswanth Fashion Hub was born with a simple mission — bring premium-quality fashion to every family in Chennai at prices that make sense. Located in the heart of T. Nagar, we have grown into one of the area's most trusted names.
         </p>
         <p class="text-gray-600 leading-relaxed text-sm sm:text-base mb-6">
-          We curate the best in men's casual &amp; formal wear, kids' clothing, innerwear, and seasonal collections — all under one roof. Every item is hand-picked for quality, comfort, and style. Our friendly staff are here to help you find exactly what you need.
+          We made the best in men's casual &amp; formal wear, kids' clothing, innerwear, and seasonal collections — all under one roof. Every item is hand-picked for quality, comfort, and style. Our friendly staff are here to help you find exactly what you need.
         </p>
 
         <!-- Features grid -->
@@ -1130,8 +1130,9 @@ function closeShop() {
 function renderShop() {
   document.getElementById('shopLoad').style.display = 'none';
   var grid = document.getElementById('shopGrid');
-  var cols = window.innerWidth >= 1024 ? 'repeat(4,1fr)' : window.innerWidth >= 640 ? 'repeat(3,1fr)' : 'repeat(2,1fr)';
-  grid.style.cssText = 'display:grid;gap:10px;grid-template-columns:' + cols + ';';
+  // 1 column on mobile for bigger images, 2 on tablet, 3 on desktop
+  var cols = window.innerWidth >= 1024 ? 'repeat(3,1fr)' : window.innerWidth >= 640 ? 'repeat(2,1fr)' : 'repeat(1,1fr)';
+  grid.style.cssText = 'display:grid;gap:12px;grid-template-columns:' + cols + ';';
 
   if (!products || products.length === 0) {
     grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:56px 0;color:#9ca3af;font-size:14px;">No products yet. Add from Admin!</p>';
@@ -1142,23 +1143,44 @@ function renderShop() {
     var imgs = (p.images && p.images.length) ? p.images : [];
     var pid  = String(p.id);
     var slides = imgs.length
-      ? imgs.map(function(img){ return '<div class="sslide" style="min-width:100%;height:100%;flex-shrink:0;"><img src="' + img + '" style="width:100%;height:100%;object-fit:cover;" loading="lazy"></div>'; }).join('')
-      : '<div class="sslide" style="min-width:100%;height:100%;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:12px;">No Image</div>';
+      ? imgs.map(function(img){
+          return '<div class="sslide" style="min-width:100%;height:100%;flex-shrink:0;">'
+            + '<img src="' + img + '" style="width:100%;height:100%;object-fit:cover;cursor:zoom-in;" loading="lazy"'
+            + ' onclick="event.stopPropagation();openLightbox(\'' + img + '\',\'' + p.name + '\')">'
+            + '</div>';
+        }).join('')
+      : '<div class="sslide" style="min-width:100%;height:100%;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:13px;background:#f9f9f9;">No Image</div>';
+
+    var dots = imgs.length > 1
+      ? '<div style="position:absolute;bottom:8px;left:0;right:0;display:flex;justify-content:center;gap:5px;z-index:4;" id="dots-' + pid + '">'
+        + imgs.map(function(_,i){ return '<div style="width:6px;height:6px;border-radius:50%;background:' + (i===0?'#fff':'rgba(255,255,255,0.5)') + ';transition:background .2s;" id="dot-' + pid + '-' + i + '"></div>'; }).join('')
+        + '</div>' : '';
+
     var arrows = imgs.length > 1
-      ? '<button type="button" onclick="event.stopPropagation();slideImg(\'' + pid + '\',-1)" style="position:absolute;left:4px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.95);border:none;width:30px;height:30px;border-radius:50%;font-size:20px;line-height:28px;text-align:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);z-index:5;padding:0;">&#8249;</button>'
-        + '<button type="button" onclick="event.stopPropagation();slideImg(\'' + pid + '\',1)" style="position:absolute;right:4px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.95);border:none;width:30px;height:30px;border-radius:50%;font-size:20px;line-height:28px;text-align:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);z-index:5;padding:0;">&#8250;</button>'
+      ? '<button type="button" onclick="event.stopPropagation();slideImg(\'' + pid + '\',-1)" style="position:absolute;left:6px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.45);color:#fff;border:none;width:32px;height:32px;border-radius:50%;font-size:22px;line-height:30px;text-align:center;cursor:pointer;z-index:5;padding:0;">&#8249;</button>'
+        + '<button type="button" onclick="event.stopPropagation();slideImg(\'' + pid + '\',1)"  style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.45);color:#fff;border:none;width:32px;height:32px;border-radius:50%;font-size:22px;line-height:30px;text-align:center;cursor:pointer;z-index:5;padding:0;">&#8250;</button>'
       : '';
-    return '<div style="background:#fff;border:1px solid #ede8df;border-radius:6px;overflow:hidden;">'
-      + '<div id="sl-' + pid + '" data-i="0" style="position:relative;height:160px;overflow:hidden;background:#f5f0eb;">'
+
+    // Image count badge
+    var badge = imgs.length > 1
+      ? '<div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.55);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;z-index:4;">1/' + imgs.length + '</div>'
+      : '';
+
+    return '<div style="background:#fff;border:1px solid #ede8df;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);">'
+
+      // Image area — tall portrait ratio
+      + '<div id="sl-' + pid + '" data-i="0" style="position:relative;overflow:hidden;background:#f5f0eb;aspect-ratio:3/4;">'
       + '<div id="strack-' + pid + '" style="display:flex;height:100%;transition:transform .3s ease;">' + slides + '</div>'
-      + arrows
+      + arrows + dots + badge
       + '</div>'
-      + '<div style="padding:10px;">'
-      + '<p style="font-size:13px;font-weight:600;margin:0 0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + p.name + '</p>'
-      + '<p style="font-size:11px;color:#9ca3af;margin:0 0 8px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:26px;">' + (p.desc||'') + '</p>'
-      + '<div style="display:flex;justify-content:space-between;align-items:center;gap:4px;">'
-      + '<span style="font-weight:700;color:#800020;font-size:15px;">&#8377;' + p.price + '</span>'
-      + '<button type="button" onclick="addToCart(\'' + pid + '\')" style="background:#1A1A1A;color:#fff;border:none;padding:8px 12px;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;min-height:36px;">Add +</button>'
+
+      // Info area
+      + '<div style="padding:12px;">'
+      + '<p style="font-size:14px;font-weight:700;margin:0 0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#1a1a1a;">' + p.name + '</p>'
+      + '<p style="font-size:12px;color:#9ca3af;margin:0 0 10px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:32px;">' + (p.desc||'') + '</p>'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">'
+      + '<span style="font-weight:800;color:#800020;font-size:17px;">&#8377;' + p.price + '</span>'
+      + '<button type="button" onclick="addToCart(\'' + pid + '\')" style="background:#1A1A1A;color:#fff;border:none;padding:10px 18px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;min-height:40px;letter-spacing:.3px;">Add to Cart</button>'
       + '</div></div></div>';
   }).join('');
 }
@@ -1174,6 +1196,17 @@ function slideImg(pid, d) {
   if (i < 0) i = slides.length - 1;
   c.dataset.i = i;
   track.style.transform = 'translateX(-' + (i * 100) + '%)';
+
+  // Update image count badge
+  var badge = c.querySelector('[id^="dot-' + pid + '"]');
+  // Update dots
+  slides.forEach(function(_, idx) {
+    var dot = document.getElementById('dot-' + pid + '-' + idx);
+    if (dot) dot.style.background = idx === i ? '#fff' : 'rgba(255,255,255,0.5)';
+  });
+  // Update count badge text
+  var badges = c.querySelectorAll('div[style*="1/"]');
+  badges.forEach(function(b){ b.textContent = (i+1) + '/' + slides.length; });
 }
 
 function addToCart(pid) {
