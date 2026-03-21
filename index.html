@@ -507,21 +507,34 @@ section, footer, header, nav { max-width: 100vw; overflow-x: hidden; }
 <script>
 let cfg = {
   sheet: "https://script.google.com/macros/s/AKfycbyKnfIGlmCJ2_W0CZD3zoV920gvIemH9HKSWSDB0xIk53Zd1okjTsav9ODwyyUxLnR1hQ/exec",
-  wa:   "919840980001",
-  pass: "jeswanth123",
-  theme:"default",
-  offer:"3 Casual Shirts for ₹999"
+  wa:    "919840980001",
+  pass:  "jeswanth123",
+  theme: "default",
+  offer: "3 Casual Shirts for ₹999",
+  delivery: "FREE Delivery — 2 to 3 Days",
+  zone1label: "T. Nagar / Nearby",
+  zone1charge: "0",
+  zone2label: "Chennai City",
+  zone2charge: "40",
+  zone3label: "Outside Chennai",
+  zone3charge: "80"
 };
-// Load saved settings but NEVER overwrite the sheet URL with empty
+// Load saved settings
 try {
   const s = localStorage.getItem('jfw_cfg');
   if (s) {
     const saved = JSON.parse(s);
-    cfg.wa    = saved.wa    || cfg.wa;
-    cfg.pass  = saved.pass  || cfg.pass;
-    cfg.theme = saved.theme || cfg.theme;
-    cfg.offer = saved.offer || cfg.offer;
-    // Only use saved sheet URL if it's not empty
+    cfg.wa          = saved.wa          || cfg.wa;
+    cfg.pass        = saved.pass        || cfg.pass;
+    cfg.theme       = saved.theme       || cfg.theme;
+    cfg.offer       = saved.offer       || cfg.offer;
+    cfg.delivery    = saved.delivery    || cfg.delivery;
+    cfg.zone1label  = saved.zone1label  !== undefined ? saved.zone1label  : cfg.zone1label;
+    cfg.zone1charge = saved.zone1charge !== undefined ? saved.zone1charge : cfg.zone1charge;
+    cfg.zone2label  = saved.zone2label  !== undefined ? saved.zone2label  : cfg.zone2label;
+    cfg.zone2charge = saved.zone2charge !== undefined ? saved.zone2charge : cfg.zone2charge;
+    cfg.zone3label  = saved.zone3label  !== undefined ? saved.zone3label  : cfg.zone3label;
+    cfg.zone3charge = saved.zone3charge !== undefined ? saved.zone3charge : cfg.zone3charge;
     if (saved.sheet && saved.sheet.trim() !== '') cfg.sheet = saved.sheet;
   }
 } catch(e) {}
@@ -1083,9 +1096,12 @@ const THEMES={
     </div>
 
     <!-- Delivery promise bar -->
-    <div style="background:#f0fdf4;border-bottom:1px solid #bbf7d0;padding:8px 16px;display:flex;align-items:center;gap:6px;">
-      <span style="font-size:14px;">🚚</span>
-      <span style="font-size:12px;color:#166534;font-weight:600;">FREE Delivery on all orders in Chennai!</span>
+    <div style="background:#f0fdf4;border-bottom:1px solid #bbf7d0;padding:10px 16px;">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+        <span style="font-size:14px;">🚚</span>
+        <span id="cartDeliveryBanner" style="font-size:12px;color:#166534;font-weight:600;"></span>
+      </div>
+      <div id="cartDeliveryZones" class="delivery-zones-block"></div>
     </div>
 
     <div style="padding:12px 12px 0;">
@@ -1220,6 +1236,44 @@ const THEMES={
           <label style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;display:block;margin-bottom:6px;">Google Apps Script URL</label>
           <input type="url" id="cfgSheet" placeholder="https://script.google.com/macros/s/…" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:12px;">
           <p style="font-size:10px;color:#9ca3af;margin:5px 0 0;">Paste your deployed Web App URL for Google Sheet sync</p>
+        </div>
+        <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px;">
+          <label style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;display:block;margin-bottom:6px;">Delivery Message</label>
+          <input type="text" id="cfgDelivery" placeholder="FREE Delivery — 2 to 3 Days" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;">
+          <p style="font-size:10px;color:#9ca3af;margin:5px 0 0;">Main delivery line shown on product page and cart</p>
+        </div>
+
+        <!-- Delivery Zones -->
+        <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px;">
+          <label style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;display:block;margin-bottom:4px;">🚚 Delivery Charges by Distance</label>
+          <p style="font-size:10px;color:#9ca3af;margin:0 0 10px;">Set 0 for FREE. Shown on every product & cart.</p>
+          <!-- Zone 1 -->
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+            <span style="font-size:11px;color:#374151;font-weight:600;white-space:nowrap;min-width:18px;">1.</span>
+            <input type="text" id="cfgZone1label" placeholder="e.g. T. Nagar / Nearby" style="flex:2;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:7px;font-size:12px;">
+            <div style="display:flex;align-items:center;gap:4px;flex:1;">
+              <span style="font-size:12px;font-weight:700;color:#800020;">₹</span>
+              <input type="number" id="cfgZone1charge" placeholder="0" min="0" style="width:100%;padding:8px 8px;border:1.5px solid #e5e7eb;border-radius:7px;font-size:13px;font-weight:700;">
+            </div>
+          </div>
+          <!-- Zone 2 -->
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+            <span style="font-size:11px;color:#374151;font-weight:600;white-space:nowrap;min-width:18px;">2.</span>
+            <input type="text" id="cfgZone2label" placeholder="e.g. Chennai City" style="flex:2;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:7px;font-size:12px;">
+            <div style="display:flex;align-items:center;gap:4px;flex:1;">
+              <span style="font-size:12px;font-weight:700;color:#800020;">₹</span>
+              <input type="number" id="cfgZone2charge" placeholder="40" min="0" style="width:100%;padding:8px 8px;border:1.5px solid #e5e7eb;border-radius:7px;font-size:13px;font-weight:700;">
+            </div>
+          </div>
+          <!-- Zone 3 -->
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span style="font-size:11px;color:#374151;font-weight:600;white-space:nowrap;min-width:18px;">3.</span>
+            <input type="text" id="cfgZone3label" placeholder="e.g. Outside Chennai" style="flex:2;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:7px;font-size:12px;">
+            <div style="display:flex;align-items:center;gap:4px;flex:1;">
+              <span style="font-size:12px;font-weight:700;color:#800020;">₹</span>
+              <input type="number" id="cfgZone3charge" placeholder="80" min="0" style="width:100%;padding:8px 8px;border:1.5px solid #e5e7eb;border-radius:7px;font-size:13px;font-weight:700;">
+            </div>
+          </div>
         </div>
         <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px;">
           <label style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;display:block;margin-bottom:6px;">WhatsApp Number</label>
@@ -1372,29 +1426,29 @@ const THEMES={
           <label style="font-size:10px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px;">Stock Count</label>
           <input type="number" id="prodStock" placeholder="e.g. 10  (leave blank = unlimited)" style="width:100%;padding:9px 10px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;">
         </div>
+
         <!-- COD Toggle -->
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;" onclick="toggleSwitch('prodCOD','#16a34a')">
           <div>
             <p style="font-size:13px;font-weight:700;margin:0 0 2px;color:#166534;">💵 Cash on Delivery (COD)</p>
-            <p style="font-size:10px;color:#4ade80;margin:0;">Customer pays when order arrives</p>
+            <p style="font-size:10px;color:#15803d;margin:0;">Customer pays when order arrives</p>
           </div>
-          <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;">
-            <input type="checkbox" id="prodCOD" checked style="opacity:0;width:0;height:0;">
-            <span onclick="this.previousElementSibling.checked=!this.previousElementSibling.checked;this.style.background=this.previousElementSibling.checked?'#16a34a':'#d1d5db';" style="position:absolute;cursor:pointer;inset:0;background:#16a34a;border-radius:24px;transition:.3s;"></span>
-            <span onclick="document.getElementById('prodCOD').checked=!document.getElementById('prodCOD').checked;" style="position:absolute;content:'';height:18px;width:18px;left:3px;top:3px;background:white;border-radius:50%;transition:.3s;pointer-events:none;"></span>
-          </label>
+          <div id="prodCOD_track" style="position:relative;width:44px;height:24px;border-radius:24px;background:#16a34a;transition:background .25s;flex-shrink:0;cursor:pointer;">
+            <div id="prodCOD_knob" style="position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:3px;left:23px;transition:left .25s;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div>
+            <input type="checkbox" id="prodCOD" checked style="position:absolute;opacity:0;width:0;height:0;">
+          </div>
         </div>
+
         <!-- Replacement Toggle -->
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#fff8f0;border:1px solid #fed7aa;border-radius:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#fff8f0;border:1px solid #fed7aa;border-radius:8px;" onclick="toggleSwitch('prodReplacement','#d97706')">
           <div>
             <p style="font-size:13px;font-weight:700;margin:0 0 2px;color:#92400e;">🔄 Replacement Available</p>
-            <p style="font-size:10px;color:#f59e0b;margin:0;">Easy exchange within 7 days</p>
+            <p style="font-size:10px;color:#b45309;margin:0;">Easy exchange within 7 days</p>
           </div>
-          <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;">
-            <input type="checkbox" id="prodReplacement" checked style="opacity:0;width:0;height:0;">
-            <span onclick="this.previousElementSibling.checked=!this.previousElementSibling.checked;this.style.background=this.previousElementSibling.checked?'#d97706':'#d1d5db';" style="position:absolute;cursor:pointer;inset:0;background:#d97706;border-radius:24px;transition:.3s;"></span>
-            <span style="position:absolute;height:18px;width:18px;left:3px;top:3px;background:white;border-radius:50%;transition:.3s;pointer-events:none;"></span>
-          </label>
+          <div id="prodReplacement_track" style="position:relative;width:44px;height:24px;border-radius:24px;background:#d97706;transition:background .25s;flex-shrink:0;cursor:pointer;">
+            <div id="prodReplacement_knob" style="position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:3px;left:23px;transition:left .25s;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div>
+            <input type="checkbox" id="prodReplacement" checked style="position:absolute;opacity:0;width:0;height:0;">
+          </div>
         </div>
       </div>
 
@@ -1517,6 +1571,9 @@ renderGallery('all');
 renderReviews();
 renderFeatured();
 document.getElementById('heroOffer').textContent = cfg.offer;
+var cartBanner = document.getElementById('cartDeliveryBanner');
+if (cartBanner) cartBanner.textContent = cfg.delivery;
+renderDeliveryZones();
 
 // ── AUTO SYNC on page load ──
 // Customers always get fresh products from Google Sheet
@@ -1545,10 +1602,35 @@ document.getElementById('heroOffer').textContent = cfg.offer;
     }
 
     if (freshProducts && freshProducts.length > 0) {
-      products = freshProducts;
+      // MERGE: keep locally-saved extra fields (mrp, fabric, fit, stock etc.)
+      // Sheet is the source of truth for: id, name, price, desc, colors, images
+      // Local is the source of truth for: mrp, category, stock, cod, replacement, badge, fabric, fit
+      var localMap = {};
+      products.forEach(function(p){ localMap[String(p.id)] = p; });
+
+      products = freshProducts.map(function(fresh) {
+        var local = localMap[String(fresh.id)] || {};
+        return {
+          id         : fresh.id,
+          name       : fresh.name       || local.name       || '',
+          price      : fresh.price      || local.price      || 0,
+          desc       : fresh.desc       || local.desc       || '',
+          colors     : fresh.colors     || local.colors     || [],
+          images     : fresh.images     || local.images     || [],
+          // New fields: use sheet value if it exists, else keep local value
+          mrp        : fresh.mrp        || local.mrp        || 0,
+          category   : fresh.category   || local.category   || '',
+          stock      : (fresh.stock != null) ? fresh.stock  : (local.stock != null ? local.stock : null),
+          cod        : (fresh.cod        != null) ? fresh.cod        : (local.cod        != null ? local.cod        : true),
+          replacement: (fresh.replacement != null) ? fresh.replacement : (local.replacement != null ? local.replacement : true),
+          badge      : fresh.badge      || local.badge      || '',
+          fabric     : fresh.fabric     || local.fabric     || '',
+          fit        : fresh.fit        || local.fit        || ''
+        };
+      });
+
       saveProducts();
       renderFeatured();
-      // If shop is already open, refresh it live
       if (document.getElementById('shopOv').style.display === 'block') {
         renderShop();
       }
@@ -1586,14 +1668,39 @@ async function syncNow() {
   if (!cfg.sheet) { showToast('⚠️ No Google Sheet URL set in Settings'); return; }
   document.getElementById('syncStatus').textContent = 'Syncing...';
   try {
-    const r = await fetch(cfg.sheet + '?action=GET_ALL', { mode:'cors' });
+    const r    = await fetch(cfg.sheet, { mode:'cors' });
     const data = await r.json();
+
     if (data.products && Array.isArray(data.products)) {
-      products = data.products;
+      // Merge fresh sheet data with local extra fields
+      var localMap = {};
+      products.forEach(function(p){ localMap[String(p.id)] = p; });
+
+      products = data.products.map(function(fresh) {
+        var local = localMap[String(fresh.id)] || {};
+        return {
+          id         : fresh.id,
+          name       : fresh.name    || local.name    || '',
+          price      : fresh.price   || local.price   || 0,
+          desc       : fresh.desc    || local.desc    || '',
+          colors     : fresh.colors  || local.colors  || [],
+          images     : fresh.images  || local.images  || [],
+          mrp        : fresh.mrp     || local.mrp     || 0,
+          category   : fresh.category|| local.category|| '',
+          stock      : (fresh.stock != null)        ? fresh.stock        : (local.stock        != null ? local.stock        : null),
+          cod        : (fresh.cod != null)          ? fresh.cod          : (local.cod          != null ? local.cod          : true),
+          replacement: (fresh.replacement != null)  ? fresh.replacement  : (local.replacement  != null ? local.replacement  : true),
+          badge      : fresh.badge   || local.badge   || '',
+          fabric     : fresh.fabric  || local.fabric  || '',
+          fit        : fresh.fit     || local.fit     || ''
+        };
+      });
+
       saveProducts();
       renderProdTable();
       renderShop();
-      showToast('✓ Products synced from Google Sheet!');
+      renderFeatured();
+      showToast('✓ Synced from Google Sheet!');
     }
     if (data.orders && Array.isArray(data.orders)) {
       orders = data.orders;
@@ -1605,12 +1712,13 @@ async function syncNow() {
       localStorage.setItem('jfw_feedbacks', JSON.stringify(feedbacks));
       renderAdminFeedbacks();
     }
+    updateAdminStats();
     document.getElementById('syncStatus').textContent = '✓ Synced';
-    setTimeout(()=>document.getElementById('syncStatus').textContent='', 3000);
+    setTimeout(function(){ document.getElementById('syncStatus').textContent = ''; }, 3000);
   } catch(e) {
     document.getElementById('syncStatus').textContent = '✗ Sync failed';
     showToast('Sync failed. Check Script URL in Settings.');
-    setTimeout(()=>document.getElementById('syncStatus').textContent='', 3000);
+    setTimeout(function(){ document.getElementById('syncStatus').textContent = ''; }, 3000);
   }
 }
 
@@ -2086,10 +2194,25 @@ function tryLogin() {
 }
 
 function loadAdmin() {
-  document.getElementById('cfgSheet').value = cfg.sheet;
-  document.getElementById('cfgWa').value    = cfg.wa;
-  document.getElementById('cfgPass').value  = cfg.pass;
-  document.getElementById('cfgOffer').value = cfg.offer;
+  document.getElementById('cfgSheet').value    = cfg.sheet;
+  document.getElementById('cfgWa').value       = cfg.wa;
+  document.getElementById('cfgPass').value     = cfg.pass;
+  document.getElementById('cfgOffer').value    = cfg.offer;
+  var dEl = document.getElementById('cfgDelivery');
+  if (dEl) dEl.value = cfg.delivery || '';
+  // Zone fields
+  var zoneKeys = [
+    ['cfgZone1label',  'zone1label'],
+    ['cfgZone1charge', 'zone1charge'],
+    ['cfgZone2label',  'zone2label'],
+    ['cfgZone2charge', 'zone2charge'],
+    ['cfgZone3label',  'zone3label'],
+    ['cfgZone3charge', 'zone3charge']
+  ];
+  zoneKeys.forEach(function(pair){
+    var el = document.getElementById(pair[0]);
+    if (el) el.value = cfg[pair[1]] || '';
+  });
   renderProdTable();
   renderOrders();
   renderAdminFeedbacks();
@@ -2164,9 +2287,10 @@ function renderProdTable() {
           + (p.category ? '<span style="font-size:9px;background:#f1f5f9;color:#374151;padding:2px 6px;border-radius:4px;font-weight:600;">' + p.category + '</span>' : '')
           + stockBadge + codBadge + repBadge
           + '</div>'
-          + '<div style="display:flex;gap:6px;">'
+          + '<div style="display:flex;gap:5px;">'
           + '<button onclick="editProd(' + p.id + ')" style="flex:1;background:#eff6ff;color:#2563eb;border:none;padding:7px 0;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">✏️ Edit</button>'
-          + '<button onclick="delProd(' + p.id + ')" style="background:#fef2f2;color:#dc2626;border:none;padding:7px 12px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">🗑</button>'
+          + '<button onclick="quickStock(\'' + p.id + '\')" style="background:#f0fdf4;color:#16a34a;border:none;padding:7px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;" title="Update Stock">📦 ' + (p.stock != null ? p.stock : '∞') + '</button>'
+          + '<button onclick="delProd(' + p.id + ')" style="background:#fef2f2;color:#dc2626;border:none;padding:7px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">🗑</button>'
           + '</div>'
           + '</div></div>';
       }).join('');
@@ -2244,16 +2368,91 @@ function renderAdminFeedbacks() {
 }
 
 function saveSettings() {
-  cfg.sheet = document.getElementById('cfgSheet').value.trim();
-  cfg.wa    = document.getElementById('cfgWa').value.trim();
-  cfg.pass  = document.getElementById('cfgPass').value || cfg.pass;
+  cfg.sheet    = document.getElementById('cfgSheet').value.trim();
+  cfg.wa       = document.getElementById('cfgWa').value.trim();
+  cfg.pass     = document.getElementById('cfgPass').value || cfg.pass;
+  var dEl      = document.getElementById('cfgDelivery');
+  if (dEl && dEl.value.trim()) cfg.delivery = dEl.value.trim();
+  // Save zone fields
+  var zoneKeys = [
+    ['cfgZone1label',  'zone1label'],
+    ['cfgZone1charge', 'zone1charge'],
+    ['cfgZone2label',  'zone2label'],
+    ['cfgZone2charge', 'zone2charge'],
+    ['cfgZone3label',  'zone3label'],
+    ['cfgZone3charge', 'zone3charge']
+  ];
+  zoneKeys.forEach(function(pair){
+    var el = document.getElementById(pair[0]);
+    if (el) cfg[pair[1]] = el.value.trim();
+  });
   localStorage.setItem('jfw_cfg', JSON.stringify(cfg));
-  updateUI(); showToast('Settings saved!');
+  // Update cart delivery banner
+  var banner = document.getElementById('cartDeliveryBanner');
+  if (banner) banner.textContent = cfg.delivery;
+  // Refresh delivery zones wherever shown
+  renderDeliveryZones();
+  updateUI();
+  showToast('Settings saved!');
 }
 
 function updateUI() {
   const link=`https://wa.me/${cfg.wa}?text=Hi%20Jeswanth%20Fashion%20Hub!%20I%27d%20like%20more%20info.`;
   ['waBtn','floatWa'].forEach(id=>{const el=document.getElementById(id);if(el)el.href=link;});
+}
+
+// ── Build delivery zones HTML ──
+function buildDeliveryZonesHTML() {
+  var zones = [
+    { label: cfg.zone1label, charge: cfg.zone1charge },
+    { label: cfg.zone2label, charge: cfg.zone2charge },
+    { label: cfg.zone3label, charge: cfg.zone3charge }
+  ].filter(function(z){ return z.label && z.label.trim(); });
+
+  if (!zones.length) return '';
+
+  return '<div style="margin-top:8px;border-top:1px solid #dcfce7;padding-top:8px;">'
+    + '<p style="font-size:10px;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:.08em;margin:0 0 6px;">Delivery Charges</p>'
+    + zones.map(function(z) {
+        var charge = Number(z.charge) || 0;
+        var chargeText = charge === 0
+          ? '<span style="color:#16a34a;font-weight:800;">FREE</span>'
+          : '<span style="color:#374151;font-weight:700;">₹' + charge + '</span>';
+        return '<div style="display:flex;justify-content:space-between;font-size:11px;color:#374151;margin-bottom:4px;">'
+          + '<span>📍 ' + z.label + '</span>'
+          + chargeText
+          + '</div>';
+      }).join('')
+    + '<p style="font-size:10px;color:#9ca3af;margin:6px 0 0;">Delivery charges will be discussed on WhatsApp order</p>'
+    + '</div>';
+}
+
+function renderDeliveryZones() {
+  // Update all delivery zone containers on page
+  document.querySelectorAll('.delivery-zones-block').forEach(function(el) {
+    el.innerHTML = buildDeliveryZonesHTML();
+  });
+}
+
+// ── Toggle switch helper ──
+function toggleSwitch(id, onColor) {
+  var cb    = document.getElementById(id);
+  var track = document.getElementById(id + '_track');
+  var knob  = document.getElementById(id + '_knob');
+  if (!cb || !track || !knob) return;
+  cb.checked = !cb.checked;
+  track.style.background = cb.checked ? onColor : '#d1d5db';
+  knob.style.left = cb.checked ? '23px' : '3px';
+}
+
+function setToggle(id, onColor, value) {
+  var cb    = document.getElementById(id);
+  var track = document.getElementById(id + '_track');
+  var knob  = document.getElementById(id + '_knob');
+  if (!cb || !track || !knob) return;
+  cb.checked = value;
+  track.style.background = value ? onColor : '#d1d5db';
+  knob.style.left = value ? '23px' : '3px';
 }
 
 // ── Product CRUD ──
@@ -2272,15 +2471,9 @@ function openProdModal(id) {
     else el.value = '';
   });
 
-  // Reset selects and checkboxes
-  var catEl = document.getElementById('prodCategory');
-  if (catEl) catEl.value = '';
-  var badgeEl = document.getElementById('prodBadge');
-  if (badgeEl) badgeEl.value = '';
-  var codEl = document.getElementById('prodCOD');
-  if (codEl) codEl.checked = true;
-  var repEl = document.getElementById('prodReplacement');
-  if (repEl) repEl.checked = true;
+  // Reset toggles to ON by default
+  setToggle('prodCOD',         '#16a34a', true);
+  setToggle('prodReplacement', '#d97706', true);
 
   var up = document.getElementById('uploadProgress');
   if (up) up.style.display = 'none';
@@ -2307,8 +2500,10 @@ function openProdModal(id) {
     if (stockEl) stockEl.value = p.stock != null ? p.stock : '';
     if (catEl) catEl.value = p.category || '';
     if (badgeEl) badgeEl.value = p.badge || '';
-    if (codEl) codEl.checked = p.cod !== false;
-    if (repEl) repEl.checked = p.replacement !== false;
+    var codVal = !(p.cod === false || p.cod === 'no' || p.cod === 'false');
+    var repVal = !(p.replacement === false || p.replacement === 'no' || p.replacement === 'false');
+    setToggle('prodCOD',         '#16a34a', codVal);
+    setToggle('prodReplacement', '#d97706', repVal);
     if (p.images && p.images.length) {
       tempImgs = p.images.map(function(u){ return typeof u === 'string' ? u : (u.url||u.preview||''); }).filter(Boolean);
       renderImgGrid();
@@ -2440,6 +2635,39 @@ async function saveProduct() {
 }
 
 function editProd(id) { openProdModal(String(id)); }
+
+// ── Quick stock update ──
+async function quickStock(id) {
+  id = String(id);
+  var p = products.find(function(x){ return String(x.id) === id; });
+  if (!p) return;
+  var current = (p.stock != null) ? String(p.stock) : '';
+  var val = prompt('Update stock for "' + p.name + '":\n(Enter a number, or leave blank for unlimited)', current);
+  if (val === null) return;  // cancelled
+  var newStock = val.trim() === '' ? null : Number(val.trim());
+  if (val.trim() !== '' && isNaN(newStock)) { showToast('Enter a valid number!'); return; }
+
+  var idx = products.findIndex(function(x){ return String(x.id) === id; });
+  products[idx].stock = newStock;
+  saveProducts();
+  renderProdTable();
+  renderShop();
+
+  // Save to sheet
+  await apiCall({
+    action: 'SAVE_PRODUCT',
+    id: id,
+    name: p.name, price: p.price, mrp: p.mrp || 0,
+    desc: p.desc || '', colors: (p.colors||[]).join(','),
+    images: (p.images||[]).filter(function(u){ return !u.startsWith('data:'); }).join(','),
+    category: p.category || '', stock: newStock !== null ? newStock : '',
+    cod: (p.cod === false || p.cod === 'no') ? 'no' : 'yes',
+    replacement: (p.replacement === false || p.replacement === 'no') ? 'no' : 'yes',
+    badge: p.badge || '', fabric: p.fabric || '', fit: p.fit || ''
+  });
+
+  showToast('📦 Stock updated: ' + (newStock !== null ? newStock + ' units' : 'Unlimited'));
+}
 
 async function delProd(id) {
   if (!confirm('Delete this product?')) return;
@@ -2648,43 +2876,38 @@ function openProdDetail(pid) {
   var desc     = (p.desc || '').toLowerCase();
   var isKid    = desc.includes('kids') || (p.category||'').includes('kids') || p.name.toLowerCase().includes('kids');
 
-  // Use admin-set MRP if available, else auto-calculate
-  var origPrice = (p.mrp && p.mrp > p.price) ? p.mrp : Math.round(p.price * 1.3);
-  var discount  = Math.round(((origPrice - p.price) / origPrice) * 100);
+  // ── All display variables (unified naming) ──
+  var realMRP      = (p.mrp && Number(p.mrp) > p.price) ? Number(p.mrp) : Math.round(p.price * 1.3);
+  var realDiscount = Math.round(((realMRP - p.price) / realMRP) * 100);
+  var realStock    = (p.stock != null && p.stock !== '') ? Number(p.stock) : null;
+  var realCOD      = !(p.cod === false || p.cod === 'no' || p.cod === 'false');
+  var realReplace  = !(p.replacement === false || p.replacement === 'no' || p.replacement === 'false');
+  var realFabric   = p.fabric || (isKid ? 'Soft Cotton Blend' : (desc.includes('lycra')?'Lycra Stretch':desc.includes('denim')?'Denim':desc.includes('cotton')?'100% Cotton':'Premium Fabric'));
+  var realFit      = p.fit    || (isKid ? 'Regular Fit' : (desc.includes('slim')?'Slim Fit':desc.includes('loose')?'Loose Fit':'Regular Fit'));
+  var realStyle    = isKid ? 'Casual / Everyday' : (desc.includes('formal')?'Formal':'Casual / Semi-Formal');
+  var realCat      = p.category || (isKid ? 'Kids Wear' : "Men's Wear");
 
   // Urgency / viewer count (deterministic per product)
-  var hash     = String(p.id).split('').reduce(function(a,c){ return a+c.charCodeAt(0); }, 0);
-  var viewers  = 8 + (hash % 17);
+  var hash    = String(p.id).split('').reduce(function(a,c){ return a+c.charCodeAt(0); }, 0);
+  var viewers = 8 + (hash % 17);
 
-  // Real stock from admin, fallback to fake urgency
-  var realStock   = (p.stock != null && p.stock !== '') ? Number(p.stock) : null;
+  // Stock urgency HTML
   var stockUrgent = realStock !== null
     ? (realStock === 0
         ? '<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#dc2626;font-weight:700;">❌ Out of Stock</div>'
         : (realStock <= 5
-            ? '<div style="background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#991b1b;font-weight:600;">⚠️ Only <strong>' + realStock + ' left</strong> in stock — order soon!</div>'
-            : '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#166534;font-weight:600;">✅ In Stock (' + realStock + ' available)</div>'))
-    : '<div style="background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#991b1b;font-weight:600;">⚠️ Only <strong>' + (3 + (hash % 8)) + ' left</strong> in stock — order soon!</div>';
+            ? '<div style="background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#991b1b;font-weight:600;">⚠️ Only <strong>' + realStock + ' left</strong> — order soon!</div>'
+            : '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#166534;font-weight:600;">✅ In Stock (' + realStock + ' units)</div>'))
+    : '<div style="background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#991b1b;font-weight:600;">⚠️ Only <strong>' + (3 + (hash % 8)) + ' left</strong> — order soon!</div>';
 
-  // COD & Replacement from admin settings
-  var showCOD     = p.cod !== false;
-  var showReplace = p.replacement !== false;
-  var codText     = showCOD ? '💵 Cash on Delivery Available' : '💳 Prepaid Only (Online Payment)';
-  var replaceText = showReplace ? '🔄 Easy 7-day Replacement' : '⚠️ No Replacement on this item';
-
-  // Fabric & fit — use admin fields first, fallback to auto-detect
-  var fabric = p.fabric || (isKid ? 'Soft Cotton Blend' : (desc.includes('lycra')?'Lycra Stretch':desc.includes('denim')?'Denim':desc.includes('cotton')?'100% Cotton':'Premium Fabric'));
-  var fit    = p.fit    || (isKid ? 'Regular Fit' : (desc.includes('slim')?'Slim Fit':desc.includes('loose')?'Loose Fit':'Regular Fit'));
-  var style  = isKid ? 'Casual / Everyday' : (desc.includes('formal')?'Formal':'Casual / Semi-Formal');
-
-  // Highlights — use fabric/fit fields if set
+  // Highlights
   var highlights = isKid
     ? ['Kid-Safe Soft Fabric','Fun & Bright Colours','Stretchable & Comfy','Easy Machine Wash']
     : ['Soft & Breathable Fabric','Multiple Colour Options','Great for Daily Wear','Easy to Wash & Maintain'];
-  if (fabric.toLowerCase().includes('cotton')) highlights[0] = fabric + ' Fabric';
-  if (fit.toLowerCase().includes('slim'))      highlights.push('Slim Fit Design');
-  if (showCOD)     highlights.push('Cash on Delivery Available');
-  if (showReplace) highlights.push('Easy 7-Day Replacement');
+  if (realFabric.toLowerCase().includes('cotton')) highlights[0] = realFabric;
+  if (realFit.toLowerCase().includes('slim'))      highlights.push('Slim Fit Design');
+  if (realCOD)     highlights.push('Cash on Delivery Available');
+  if (realReplace) highlights.push('Easy 7-Day Replacement');
 
   // Sample reviews (based on hash so consistent)
   var REVIEW_POOL = [
@@ -2811,9 +3034,10 @@ function openProdDetail(pid) {
 
     // ── Delivery info (real COD & replacement from admin) ──
     + '<div class="delivery-box">'
-    + '<p class="free">🚚 FREE Delivery — Tomorrow by 8 PM</p>'
+    + '<p class="free">🚚 ' + cfg.delivery + '</p>'
     + (realCOD ? '<p class="cod">💵 Cash on Delivery Available</p>' : '<p style="font-size:11px;color:#b45309;margin-top:3px!important;">💳 Online / Prepaid Payment Only</p>')
     + (realReplace ? '<p style="font-size:11px;color:#047857;margin-top:3px!important;">🔄 Easy 7-day replacement policy</p>' : '<p style="font-size:11px;color:#9ca3af;margin-top:3px!important;">No replacement for this item</p>')
+    + '<div class="delivery-zones-block">' + buildDeliveryZonesHTML() + '</div>'
     + '</div>'
 
     // ── Colours ──
