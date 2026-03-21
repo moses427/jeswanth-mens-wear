@@ -106,8 +106,28 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#C9A84C;box-sh
 /* ── Admin nav active ── */
 .anav.active{color:#C9A84C;border-top:2px solid #C9A84C}
 
-/* ── Safe area ── */
-.safe-bottom{padding-bottom:env(safe-area-inset-bottom,0px)}
+/* ── Shop grid responsive ── */
+#shopGrid, #shopLoad {
+  grid-template-columns: repeat(2, 1fr);
+}
+@media(min-width:640px){
+  #shopGrid, #shopLoad { grid-template-columns: repeat(3, 1fr); }
+}
+@media(min-width:1024px){
+  #shopGrid, #shopLoad { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ── Touch friendly min sizes ── */
+button, a { min-height: 36px; }
+input, textarea, select {
+  font-size: 16px !important; /* prevents iOS zoom on focus */
+}
+
+/* ── Prevent horizontal scroll ── */
+section, footer, header, nav { max-width: 100vw; overflow-x: hidden; }
+
+/* ── Safe area bottom ── */
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
 
 /* ── Shop product card ── */
 .prod-card{background:#fff;border-radius:6px;overflow:hidden;border:1px solid #ede8df}
@@ -127,13 +147,25 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#C9A84C;box-sh
 ═══════════════════════════════════════ -->
 <script>
 let cfg = {
-  sheet: "",          // ← paste your Google Apps Script URL here
+  sheet: "https://script.google.com/macros/s/AKfycbyKnfIGlmCJ2_W0CZD3zoV920gvIemH9HKSWSDB0xIk53Zd1okjTsav9ODwyyUxLnR1hQ/exec",
   wa:   "919840980001",
   pass: "jeswanth123",
   theme:"default",
   offer:"3 Casual Shirts for ₹999"
 };
-try{ const s=localStorage.getItem('jfw_cfg'); if(s) cfg=JSON.parse(s); }catch(e){}
+// Load saved settings but NEVER overwrite the sheet URL with empty
+try {
+  const s = localStorage.getItem('jfw_cfg');
+  if (s) {
+    const saved = JSON.parse(s);
+    cfg.wa    = saved.wa    || cfg.wa;
+    cfg.pass  = saved.pass  || cfg.pass;
+    cfg.theme = saved.theme || cfg.theme;
+    cfg.offer = saved.offer || cfg.offer;
+    // Only use saved sheet URL if it's not empty
+    if (saved.sheet && saved.sheet.trim() !== '') cfg.sheet = saved.sheet;
+  }
+} catch(e) {}
 
 const THEMES={
   default: {bg:'#1A1A1A',decor:''},
@@ -196,7 +228,7 @@ const THEMES={
   <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-12 text-center">
     <p class="section-label text-gold fade-up delay-1">EST. 2019 · T. NAGAR, CHENNAI</p>
     <h1 class="font-display text-4xl sm:text-6xl md:text-7xl font-semibold leading-tight mb-4 fade-up delay-2">
-      Style for Every<br>men's &amp; Kid's.
+      Style for Every<br>Man &amp; Child.
     </h1>
     <p class="text-gray-300 text-sm sm:text-lg font-light mb-7 max-w-xl mx-auto fade-up delay-3">
       Chennai's most trusted family fashion destination — affordable, trendy &amp; quality clothing since 2019.
@@ -244,23 +276,23 @@ const THEMES={
   <div class="max-w-6xl mx-auto px-4 sm:px-6">
     <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
       <!-- Image collage -->
-      <div class="w-full lg:w-1/2 relative">
+      <div class="w-full lg:w-1/2 relative mt-6 lg:mt-0 mb-6 lg:mb-0">
         <img src="https://images.unsplash.com/photo-1601924994987-69e26d50dc26?q=80&w=800&auto=format&fit=crop"
-             alt="Store" class="w-full h-64 sm:h-80 lg:h-[480px] object-cover shadow-2xl rounded-sm">
-        <!-- Floating accent -->
-        <div class="absolute -bottom-5 -right-3 sm:-right-6 bg-burg text-white px-6 py-4 shadow-xl rounded-sm z-10">
-          <p class="font-display text-4xl font-bold leading-none">7+</p>
-          <p class="text-[10px] uppercase tracking-wider font-light mt-0.5">Years of Trust</p>
+             alt="Store" class="w-full h-56 sm:h-80 lg:h-[480px] object-cover shadow-2xl rounded-sm">
+        <!-- Floating accent bottom right — stays inside image -->
+        <div style="position:absolute;bottom:12px;right:12px;background:#800020;color:#fff;padding:10px 14px;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,0.2);z-index:10;">
+          <p style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;line-height:1;margin:0;">7+</p>
+          <p style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;margin:2px 0 0;font-weight:300;">Years of Trust</p>
         </div>
-        <!-- Second accent -->
-        <div class="absolute top-4 -left-3 sm:-left-5 bg-gold text-jet px-4 py-3 shadow-lg rounded-sm z-10">
-          <p class="font-display text-2xl font-bold leading-none">10K+</p>
-          <p class="text-[10px] uppercase tracking-wider font-light mt-0.5">Happy Families</p>
+        <!-- Floating accent top left — stays inside image -->
+        <div style="position:absolute;top:12px;left:12px;background:#C9A84C;color:#1A1A1A;padding:8px 12px;border-radius:4px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:10;">
+          <p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;line-height:1;margin:0;">10K+</p>
+          <p style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;margin:2px 0 0;font-weight:300;">Happy Families</p>
         </div>
       </div>
 
       <!-- Text -->
-      <div class="w-full lg:w-1/2 lg:pl-4">
+      <div class="w-full lg:w-1/2 lg:pl-4 mt-8 lg:mt-0">
         <p class="section-label">About Us</p>
         <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl leading-snug mb-4">
           More Than Just a<br>Clothing Store.
@@ -271,7 +303,7 @@ const THEMES={
           Founded in 2019, Jeswanth Fashion Hub was born with a simple mission — bring premium-quality fashion to every family in Chennai at prices that make sense. Located in the heart of T. Nagar, we have grown into one of the area's most trusted names.
         </p>
         <p class="text-gray-600 leading-relaxed text-sm sm:text-base mb-6">
-          We make the best in men's casual &amp; formal wear, kids' clothing, innerwear, and seasonal collections — all under one roof. Every item is hand-picked for quality, comfort, and style. Our friendly staff are here to help you find exactly what you need.
+          We curate the best in men's casual &amp; formal wear, kids' clothing, innerwear, and seasonal collections — all under one roof. Every item is hand-picked for quality, comfort, and style. Our friendly staff are here to help you find exactly what you need.
         </p>
 
         <!-- Features grid -->
@@ -299,7 +331,7 @@ const THEMES={
               <i data-lucide="shirt" class="w-4 h-4 text-gold"></i>
             </div>
             <div>
-              <p class="text-xs font-semibold">1000+ Styles</p>
+              <p class="text-xs font-semibold">500+ Styles</p>
               <p class="text-[10px] text-gray-500 mt-0.5">Men's, kids &amp; innerwear</p>
             </div>
           </div>
@@ -318,7 +350,7 @@ const THEMES={
         <div class="flex flex-wrap gap-2">
           <span class="text-xs bg-jet text-white px-3 py-1.5 rounded-full">👔 Casual Shirts</span>
           <span class="text-xs bg-jet text-white px-3 py-1.5 rounded-full">👖 Jeans & Pants</span>
-          <span class="text-xs bg-jet text-white px-3 py-1.5 rounded-full">👖 Lycra & Tracks</span>
+          <span class="text-xs bg-jet text-white px-3 py-1.5 rounded-full">🩱 Lycra & Tracks</span>
           <span class="text-xs bg-jet text-white px-3 py-1.5 rounded-full">👶 Kids Dress</span>
           <span class="text-xs bg-jet text-white px-3 py-1.5 rounded-full">👕 T-Shirts</span>
           <span class="text-xs bg-jet text-white px-3 py-1.5 rounded-full">🩲 Innerwear</span>
@@ -400,7 +432,7 @@ const THEMES={
       <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl">What Our Customers Say</h2>
       <div class="flex items-center justify-center gap-1 mt-3">
         <span class="text-gold text-lg">★★★★★</span>
-        <span class="text-sm text-gray-500 ml-2">4.8 / 5 from 10000+ customers</span>
+        <span class="text-sm text-gray-500 ml-2">4.8 / 5 from 10,000+ customers</span>
       </div>
     </div>
 
@@ -557,18 +589,18 @@ const THEMES={
      SHOP OVERLAY
 ═══════════════════════════════════════ -->
 <div id="shopOv" style="display:none;position:fixed;inset:0;z-index:40;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#FAF7F2;">
-  <div style="max-width:1280px;margin:0 auto;padding:80px 12px 96px;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding:12px 0;border-bottom:1px solid #e5e7eb;position:sticky;top:0;background:#FAF7F2;z-index:2;">
-      <h2 style="font-family:'Cormorant Garamond',serif;font-size:24px;color:#800020;margin:0;">Shop Collection</h2>
-      <button onclick="closeShop()" style="background:#fff;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.12);">✕</button>
+  <div style="max-width:1280px;margin:0 auto;padding:70px 10px 90px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding:10px 0;border-bottom:1px solid #e5e7eb;position:sticky;top:0;background:#FAF7F2;z-index:2;">
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:22px;color:#800020;margin:0;">Shop Collection</h2>
+      <button onclick="closeShop()" style="background:#fff;border:1px solid #e5e7eb;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.10);">✕</button>
     </div>
-    <div id="shopLoad" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
-      <div class="prod-card"><div class="h-44 skeleton"></div><div class="p-3 space-y-2"><div class="h-3 skeleton rounded w-3/4"></div><div class="h-3 skeleton rounded w-1/2"></div></div></div>
-      <div class="prod-card"><div class="h-44 skeleton"></div><div class="p-3 space-y-2"><div class="h-3 skeleton rounded w-3/4"></div><div class="h-3 skeleton rounded w-1/2"></div></div></div>
-      <div class="prod-card"><div class="h-44 skeleton"></div><div class="p-3 space-y-2"><div class="h-3 skeleton rounded w-3/4"></div><div class="h-3 skeleton rounded w-1/2"></div></div></div>
-      <div class="prod-card"><div class="h-44 skeleton"></div><div class="p-3 space-y-2"><div class="h-3 skeleton rounded w-3/4"></div><div class="h-3 skeleton rounded w-1/2"></div></div></div>
+    <div id="shopLoad" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+      <div style="background:#fff;border-radius:6px;overflow:hidden;"><div style="height:160px;background:linear-gradient(90deg,#f0ebe1 25%,#e8e1d4 50%,#f0ebe1 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;"></div><div style="padding:10px;"><div style="height:10px;background:#f0ebe1;border-radius:4px;margin-bottom:6px;width:75%;"></div><div style="height:10px;background:#f0ebe1;border-radius:4px;width:50%;"></div></div></div>
+      <div style="background:#fff;border-radius:6px;overflow:hidden;"><div style="height:160px;background:linear-gradient(90deg,#f0ebe1 25%,#e8e1d4 50%,#f0ebe1 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;"></div><div style="padding:10px;"><div style="height:10px;background:#f0ebe1;border-radius:4px;margin-bottom:6px;width:75%;"></div><div style="height:10px;background:#f0ebe1;border-radius:4px;width:50%;"></div></div></div>
+      <div style="background:#fff;border-radius:6px;overflow:hidden;"><div style="height:160px;background:linear-gradient(90deg,#f0ebe1 25%,#e8e1d4 50%,#f0ebe1 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;"></div><div style="padding:10px;"><div style="height:10px;background:#f0ebe1;border-radius:4px;margin-bottom:6px;width:75%;"></div><div style="height:10px;background:#f0ebe1;border-radius:4px;width:50%;"></div></div></div>
+      <div style="background:#fff;border-radius:6px;overflow:hidden;"><div style="height:160px;background:linear-gradient(90deg,#f0ebe1 25%,#e8e1d4 50%,#f0ebe1 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;"></div><div style="padding:10px;"><div style="height:10px;background:#f0ebe1;border-radius:4px;margin-bottom:6px;width:75%;"></div><div style="height:10px;background:#f0ebe1;border-radius:4px;width:50%;"></div></div></div>
     </div>
-    <div id="shopGrid" style="display:none;grid-template-columns:repeat(2,1fr);gap:12px;"></div>
+    <div id="shopGrid" style="display:none;grid-template-columns:repeat(2,1fr);gap:10px;"></div>
   </div>
 </div>
 
@@ -864,6 +896,46 @@ renderGallery('all');
 renderReviews();
 document.getElementById('heroOffer').textContent = cfg.offer;
 
+// ── AUTO SYNC on page load ──
+// Customers always get fresh products from Google Sheet
+(async function autoSync() {
+  try {
+    var res  = await fetch(cfg.sheet, { mode: 'cors' });
+    var text = await res.text();
+    var data;
+    try { data = JSON.parse(text); } catch(e) { return; }
+
+    // Handle BOTH formats:
+    // Format A (new): { products:[...], orders:[...], feedbacks:[...] }
+    // Format B (old): [ {...}, {...} ]  ← raw array of products
+    var freshProducts = null;
+
+    if (Array.isArray(data)) {
+      // Old script format — just a products array
+      freshProducts = data;
+    } else if (data.products && Array.isArray(data.products)) {
+      // New script format — full object
+      freshProducts = data.products;
+      if (data.orders   && Array.isArray(data.orders))    { orders = data.orders;    localStorage.setItem('jfw_orders',    JSON.stringify(orders)); }
+      if (data.feedbacks && Array.isArray(data.feedbacks)) { feedbacks = data.feedbacks; localStorage.setItem('jfw_feedbacks', JSON.stringify(feedbacks)); }
+      if (data.offer)  { cfg.offer = data.offer; document.getElementById('heroOffer').textContent = cfg.offer; }
+      if (data.theme)  { cfg.theme = data.theme; applyTheme(cfg.theme); }
+    }
+
+    if (freshProducts && freshProducts.length > 0) {
+      products = freshProducts;
+      saveProducts();
+      // If shop is already open, refresh it live
+      if (document.getElementById('shopOv').style.display === 'block') {
+        renderShop();
+      }
+    }
+  } catch(e) {
+    // No internet — silently use cached products from localStorage
+    console.log('Auto-sync skipped:', e.message);
+  }
+})();
+
 // ── Navigation: close overlays then scroll ──
 function goTo(sectionId) {
   document.getElementById('shopOv').style.display = 'none';
@@ -1033,52 +1105,51 @@ function closeShop() {
 
 function renderShop() {
   document.getElementById('shopLoad').style.display = 'none';
-  const grid = document.getElementById('shopGrid');
-  grid.style.display = 'grid';
+  var grid = document.getElementById('shopGrid');
+  var cols = window.innerWidth >= 1024 ? 'repeat(4,1fr)' : window.innerWidth >= 640 ? 'repeat(3,1fr)' : 'repeat(2,1fr)';
+  grid.style.cssText = 'display:grid;gap:10px;grid-template-columns:' + cols + ';';
 
   if (!products || products.length === 0) {
     grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:56px 0;color:#9ca3af;font-size:14px;">No products yet. Add from Admin!</p>';
     return;
   }
 
-  grid.innerHTML = products.map(p => {
-    const imgs = (p.images && p.images.length) ? p.images : [];
-    const pid  = String(p.id);
-    return `
-      <div style="background:#fff;border:1px solid #ede8df;border-radius:6px;overflow:hidden;">
-        <div style="position:relative;height:170px;overflow:hidden;background:#f5f0eb;" id="sl-${pid}" data-i="0">
-          <div class="slider-track" style="height:100%;display:flex;">
-            ${imgs.length
-              ? imgs.map(img => `<div style="min-width:100%;height:100%;flex-shrink:0;"><img src="${img}" style="width:100%;height:100%;object-fit:cover;" loading="lazy"></div>`).join('')
-              : `<div style="min-width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:12px;">No Image</div>`
-            }
-          </div>
-          ${imgs.length > 1 ? `
-            <button type="button" onclick="event.stopPropagation();slideImg('${pid}',-1)" style="position:absolute;left:4px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.92);border:none;width:28px;height:28px;border-radius:50%;font-size:18px;line-height:1;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.18);z-index:3;">&#8249;</button>
-            <button type="button" onclick="event.stopPropagation();slideImg('${pid}', 1)" style="position:absolute;right:4px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.92);border:none;width:28px;height:28px;border-radius:50%;font-size:18px;line-height:1;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.18);z-index:3;">&#8250;</button>
-          ` : ''}
-        </div>
-        <div style="padding:10px 12px;">
-          <p style="font-size:13px;font-weight:600;margin:0 0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.name}</p>
-          <p style="font-size:11px;color:#9ca3af;margin:0 0 8px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:28px;">${p.desc||''}</p>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-weight:700;color:#800020;font-size:15px;">&#8377;${p.price}</span>
-            <button type="button" onclick="addToCart('${pid}')" style="background:#1A1A1A;color:#fff;border:none;padding:7px 14px;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;">Add +</button>
-          </div>
-        </div>
-      </div>`;
+  grid.innerHTML = products.map(function(p) {
+    var imgs = (p.images && p.images.length) ? p.images : [];
+    var pid  = String(p.id);
+    var slides = imgs.length
+      ? imgs.map(function(img){ return '<div class="sslide" style="min-width:100%;height:100%;flex-shrink:0;"><img src="' + img + '" style="width:100%;height:100%;object-fit:cover;" loading="lazy"></div>'; }).join('')
+      : '<div class="sslide" style="min-width:100%;height:100%;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:12px;">No Image</div>';
+    var arrows = imgs.length > 1
+      ? '<button type="button" onclick="event.stopPropagation();slideImg(\'' + pid + '\',-1)" style="position:absolute;left:4px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.95);border:none;width:30px;height:30px;border-radius:50%;font-size:20px;line-height:28px;text-align:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);z-index:5;padding:0;">&#8249;</button>'
+        + '<button type="button" onclick="event.stopPropagation();slideImg(\'' + pid + '\',1)" style="position:absolute;right:4px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.95);border:none;width:30px;height:30px;border-radius:50%;font-size:20px;line-height:28px;text-align:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);z-index:5;padding:0;">&#8250;</button>'
+      : '';
+    return '<div style="background:#fff;border:1px solid #ede8df;border-radius:6px;overflow:hidden;">'
+      + '<div id="sl-' + pid + '" data-i="0" style="position:relative;height:160px;overflow:hidden;background:#f5f0eb;">'
+      + '<div id="strack-' + pid + '" style="display:flex;height:100%;transition:transform .3s ease;">' + slides + '</div>'
+      + arrows
+      + '</div>'
+      + '<div style="padding:10px;">'
+      + '<p style="font-size:13px;font-weight:600;margin:0 0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + p.name + '</p>'
+      + '<p style="font-size:11px;color:#9ca3af;margin:0 0 8px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:26px;">' + (p.desc||'') + '</p>'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;gap:4px;">'
+      + '<span style="font-weight:700;color:#800020;font-size:15px;">&#8377;' + p.price + '</span>'
+      + '<button type="button" onclick="addToCart(\'' + pid + '\')" style="background:#1A1A1A;color:#fff;border:none;padding:8px 12px;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;min-height:36px;">Add +</button>'
+      + '</div></div></div>';
   }).join('');
 }
 
 function slideImg(pid, d) {
-  const c = document.getElementById('sl-' + pid);
+  var c = document.getElementById('sl-' + pid);
   if (!c) return;
-  const slides = c.querySelectorAll('.slider-track > div');
-  let i = parseInt(c.dataset.i || 0) + d;
+  var track = document.getElementById('strack-' + pid);
+  if (!track) return;
+  var slides = track.querySelectorAll('.sslide');
+  var i = parseInt(c.dataset.i || 0) + d;
   if (i >= slides.length) i = 0;
   if (i < 0) i = slides.length - 1;
   c.dataset.i = i;
-  c.querySelector('.slider-track').style.transform = 'translateX(-' + (i * 100) + '%)';
+  track.style.transform = 'translateX(-' + (i * 100) + '%)';
 }
 
 function addToCart(pid) {
