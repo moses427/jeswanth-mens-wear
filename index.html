@@ -994,18 +994,13 @@ const THEMES={
         <input id="shopSearchInput" type="search" placeholder="Search shirts, kids, jeans…" oninput="renderShop()" autocomplete="off" style="width:100%;padding:10px 14px 10px 38px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;background:#fff;">
       </div>
       <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none;">
-        <button class="cat-tab active" data-scat="all"      onclick="setShopCat('all',this)">All</button>
-        <button class="cat-tab" data-scat="men"             onclick="setShopCat('men',this)">👔 Men</button>
-        <button class="cat-tab" data-scat="kids"            onclick="setShopCat('kids',this)">👶 Kids</button>
-        <button class="cat-tab" data-scat="shirt"           onclick="setShopCat('shirt',this)">Shirts</button>
-        <button class="cat-tab" data-scat="tshirt"          onclick="setShopCat('tshirt',this)">T-Shirts</button>
-        <button class="cat-tab" data-scat="jeans"           onclick="setShopCat('jeans',this)">Jeans</button>
-        <button class="cat-tab" data-scat="track"           onclick="setShopCat('track',this)">Tracks</button>
-        <button class="cat-tab" data-scat="watch"           onclick="setShopCat('watch',this)">⌚ Watches</button>
-        <button class="cat-tab" data-scat="belt"            onclick="setShopCat('belt',this)">🪢 Belts</button>
-        <button class="cat-tab" data-scat="shoes"           onclick="setShopCat('shoes',this)">👟 Shoes</button>
-        <button class="cat-tab" data-scat="sunglass"        onclick="setShopCat('sunglass',this)">🕶️ Sunglasses</button>
-        <button class="cat-tab" data-scat="accessories"     onclick="setShopCat('accessories',this)">💼 Accessories</button>
+        <button class="cat-tab active" data-scat="all" onclick="setShopCat('all',this)">All</button>
+        <button class="cat-tab" data-scat="men" onclick="setShopCat('men',this)">👔 Men</button>
+        <button class="cat-tab" data-scat="kids" onclick="setShopCat('kids',this)">👶 Kids</button>
+        <button class="cat-tab" data-scat="shirt" onclick="setShopCat('shirt',this)">Shirts</button>
+        <button class="cat-tab" data-scat="tshirt" onclick="setShopCat('tshirt',this)">T-Shirts</button>
+        <button class="cat-tab" data-scat="jeans" onclick="setShopCat('jeans',this)">Jeans</button>
+        <button class="cat-tab" data-scat="track" onclick="setShopCat('track',this)">Tracks</button>
       </div>
     </div>
     <div style="padding:12px;">
@@ -1262,41 +1257,51 @@ const THEMES={
     <div class="p-4 space-y-3 overflow-y-auto flex-1">
       <input type="hidden" id="editId">
       <div>
-        <label class="text-xs font-bold text-gray-600 block mb-2">📸 Product Photos</label>
+        <label class="text-xs font-bold text-gray-600 block mb-2">Product Photos</label>
 
-        <!-- LINK PASTE ONLY -->
-        <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;padding:12px;">
-          <p style="font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:6px;">🔗 Paste Image Links (one per line)</p>
-          <p style="font-size:10px;color:#9ca3af;margin-bottom:8px;">Use Google Drive links, ibb.co links, or any image URL</p>
-          <textarea id="prodImgUrls" rows="4"
-            placeholder="https://drive.google.com/file/d/ABC123/view&#10;https://i.ibb.co/xxx/photo.jpg&#10;https://any-image-url.jpg"
-            style="width:100%;padding:10px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:12px;resize:none;background:#fff;line-height:1.6;"></textarea>
+        <!-- ONE-CLICK UPLOAD via imgbb -->
+        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:6px;padding:10px;margin-bottom:8px;">
+          <p style="font-size:11px;font-weight:700;color:#166534;margin-bottom:6px;">📸 Upload from Phone / Computer</p>
+          <input type="file" id="imgbbUpload" accept="image/*" multiple class="hidden" onchange="uploadToImgbb(event)">
+          <button type="button" onclick="document.getElementById('imgbbUpload').click()"
+            style="width:100%;background:#16a34a;color:#fff;border:none;padding:10px;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+            📷 Choose Photos to Upload
+          </button>
+          <p style="font-size:10px;color:#4ade80;margin-top:4px;text-align:center;">Select up to 5 photos — uploads automatically, works on all devices forever ✓</p>
+          <div id="uploadProgress" style="display:none;margin-top:8px;">
+            <div style="background:#dcfce7;border-radius:4px;padding:6px;text-align:center;">
+              <p id="uploadProgressText" style="font-size:11px;color:#166534;font-weight:600;"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- OR paste any URL -->
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px;margin-bottom:8px;">
+          <p style="font-size:11px;font-weight:700;color:#475569;margin-bottom:4px;">🔗 Or Paste Image Links</p>
+          <textarea id="prodImgUrls" rows="3"
+            placeholder="Paste any image link — one per line:&#10;https://drive.google.com/file/d/ID/view&#10;https://i.ibb.co/xxx/photo.jpg&#10;https://any-image-url.jpg"
+            class="w-full p-2 border border-gray-200 rounded-sm text-xs resize-none bg-white"></textarea>
           <button type="button" onclick="previewDriveLinks()"
-            style="margin-top:8px;width:100%;background:#1A1A1A;color:#fff;border:none;padding:10px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.3px;">
-            ✓ Add Images
+            style="margin-top:6px;width:100%;background:#475569;color:#fff;border:none;padding:7px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;">
+            + Add Links
           </button>
         </div>
 
         <!-- Preview grid -->
-        <div id="imgGrid" class="grid grid-cols-3 gap-2 mt-2"></div>
+        <div id="imgGrid" class="grid grid-cols-3 gap-2 mt-1"></div>
         <p id="driveLoadStatus" class="text-[11px] text-center mt-1 hidden"></p>
         <div id="folderHelp" class="hidden"></div>
-        <!-- keep hidden file input so old code refs don't crash -->
-        <input type="file" id="imgbbUpload" accept="image/*" multiple class="hidden">
-        <div id="uploadProgress" style="display:none;"></div>
       </div>
       <input type="text"   id="prodName"  placeholder="Product Name *" class="w-full p-3 border border-gray-200 rounded-sm text-sm">
       <input type="number" id="prodPrice" placeholder="Price (₹) *"    class="w-full p-3 border border-gray-200 rounded-sm text-sm">
 
       <!-- ✨ AI GENERATE SECTION -->
       <div style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1px solid #c4b5fd;border-radius:8px;padding:12px;">
-        <p style="font-size:11px;font-weight:700;color:#6d28d9;margin-bottom:4px;">✨ Smart Auto-Fill</p>
-        <p style="font-size:10px;color:#7c3aed;margin-bottom:8px;">Type what the product is — name, desc & colors auto-fill instantly</p>
-        <input type="text" id="aiKeywords" placeholder="e.g: watch, belt, shoes, sunglass, shirt, kids dress…"
-          style="width:100%;padding:9px 10px;border:1px solid #c4b5fd;border-radius:6px;font-size:13px;background:#fff;margin-bottom:8px;"
-          onkeypress="if(event.key==='Enter')aiGenerateProduct()">
-        <button type="button" onclick="aiGenerateProduct()" id="aiGenBtn" class="ai-btn" style="width:100%;justify-content:center;padding:10px 14px;font-size:13px;">
-          <span>✨</span> Auto-Fill Product Details
+        <p style="font-size:11px;font-weight:700;color:#6d28d9;margin-bottom:8px;">✨ AI Auto-Fill (Optional)</p>
+        <input type="text" id="aiKeywords" placeholder="e.g. cotton shirt, kids summer, blue jeans…"
+          style="width:100%;padding:8px 10px;border:1px solid #c4b5fd;border-radius:6px;font-size:12px;background:#fff;margin-bottom:8px;">
+        <button type="button" onclick="aiGenerateProduct()" id="aiGenBtn" class="ai-btn" style="width:100%;justify-content:center;">
+          <span>✨</span> Generate Name, Description &amp; Tags
         </button>
         <p id="aiGenStatus" style="font-size:11px;color:#7c3aed;margin-top:6px;text-align:center;display:none;"></p>
       </div>
@@ -1666,23 +1671,9 @@ function getFilteredProducts() {
   let list = products;
   if (shopCat !== 'all') {
     list = list.filter(p => {
-      const n = (p.name + ' ' + (p.desc || '') + ' ' + (p.colors||[]).join(' ')).toLowerCase();
-      // Each category maps to an array of keywords — match any of them
-      const catKeywords = {
-        men:         ['men', 'man', 'gents', 'male', 'shirt', 'jeans', 'trouser', 'pant', 'track', 'tshirt', 't-shirt'],
-        kids:        ['kids', 'kid', 'child', 'children', 'boy', 'girl', 'baby', 'toddler', 'junior'],
-        shirt:       ['shirt', 'formal shirt', 'casual shirt', 'check shirt', 'half sleeve', 'full sleeve'],
-        tshirt:      ['t-shirt', 'tshirt', 'tee', 'polo', 'round neck', 'v-neck'],
-        jeans:       ['jeans', 'jean', 'denim', 'trouser', 'pant', 'bottom'],
-        track:       ['track', 'lycra', 'jogger', 'sport', 'gym', 'athletic'],
-        watch:       ['watch', 'watches', 'wristwatch', 'timepiece', 'analog', 'digital watch'],
-        belt:        ['belt', 'belts', 'strap', 'leather belt', 'waist belt'],
-        shoes:       ['shoes', 'shoe', 'footwear', 'sandal', 'slipper', 'chappal', 'sneaker', 'loafer', 'boot', 'floater'],
-        sunglass:    ['sunglass', 'sunglasses', 'shades', 'eyewear', 'goggle', 'uv protection'],
-        accessories: ['accessory', 'accessories', 'cap', 'hat', 'bag', 'wallet', 'purse', 'keychain', 'bracelet', 'chain', 'necklace', 'ring', 'earring', 'scarf', 'gloves', 'socks', 'innerwear', 'underwear', 'brief', 'vest']
-      };
-      const keys = catKeywords[shopCat] || [shopCat];
-      return keys.some(k => n.includes(k));
+      const n = (p.name + ' ' + (p.desc || '')).toLowerCase();
+      const catMap = { men:'men', kids:'kids', shirt:'shirt', tshirt:'t-shirt', jeans:'jean', track:'track' };
+      return n.includes(catMap[shopCat] || shopCat);
     });
   }
   if (q) {
@@ -2687,168 +2678,53 @@ function confirmOrder() {
   placeOrder();
 }
 
-// ── AI GENERATE — Smart Local Generator (works offline, no API needed) ──
+// ── AI GENERATE in Admin ──
 async function aiGenerateProduct() {
-  var keywords = document.getElementById('aiKeywords').value.trim().toLowerCase();
-  if (!keywords) { showToast('Enter keywords first! e.g. cotton shirt, kids dress'); return; }
+  var keywords = document.getElementById('aiKeywords').value.trim();
+  if (!keywords) { showToast('Enter some keywords first!'); return; }
 
-  var btn    = document.getElementById('aiGenBtn');
+  var btn = document.getElementById('aiGenBtn');
   var status = document.getElementById('aiGenStatus');
   btn.disabled = true;
   btn.innerHTML = '<span>⏳</span> Generating…';
   status.style.display = 'block';
-  status.style.color   = '#7c3aed';
-  status.textContent   = 'Creating product details…';
-
-  // Small delay for UX feel
-  await new Promise(function(r){ setTimeout(r, 700); });
+  status.textContent = 'AI is creating product details…';
 
   try {
-    // ── Detect type from keywords ──
-    var isKids       = /kid|child|boy|girl|baby|toddler|junior/.test(keywords);
-    var isWatch      = /watch|wrist|analog|digital watch|timepiece/.test(keywords);
-    var isBelt       = /belt|strap|waist belt|leather belt/.test(keywords);
-    var isShoes      = /shoe|sandal|slipper|chappal|sneaker|loafer|boot|footwear|floater/.test(keywords);
-    var isSunglass   = /sunglass|shade|goggle|eyewear|uv/.test(keywords);
-    var isCap        = /cap|hat|headwear/.test(keywords);
-    var isWallet     = /wallet|purse/.test(keywords);
-    var isSocks      = /sock|innerwear|underwear|brief|vest/.test(keywords);
-    var isAccessory  = /accessory|accessories|keychain|bracelet|chain|necklace|ring|earring|scarf/.test(keywords);
-    var isShirt      = /shirt|formal|check|half sleeve|full sleeve/.test(keywords);
-    var isTshirt     = /t.shirt|tshirt|tee|polo|round neck/.test(keywords);
-    var isJeans      = /jean|denim|pant|trouser|bottom/.test(keywords);
-    var isTrack      = /track|lycra|sport|gym|jogger/.test(keywords);
-    var isDress      = /dress|frock|skirt|ethnic|kurti/.test(keywords);
-    var isCotton     = /cotton|soft|breathable/.test(keywords);
-    var isSlim       = /slim|fit|skinny/.test(keywords);
-    var isLeather    = /leather|genuine|pu leather/.test(keywords);
-    var colorHint    = keywords.match(/black|white|blue|red|green|yellow|navy|grey|gray|pink|orange|brown|purple|maroon|golden|silver/);
+    var response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 400,
+        messages: [{
+          role: 'user',
+          content: 'You are a product copywriter for Jeswanth Fashion Hub, a clothing shop in Chennai, India. Based on these keywords: "' + keywords + '", generate a product name, short description (2 sentences max, sales-focused), and colors. Reply ONLY with JSON: {"name":"...","desc":"...","colors":"Black, Blue, White"}. No markdown, no extra text.'
+        }]
+      })
+    });
 
-    // ── Name pool ──
-    var NAME_POOL = {
-      watch:      ['Men\'s Analogue Wrist Watch','Stylish Casual Watch','Premium Digital Watch','Classic Round Dial Watch','Elegant Leather Strap Watch'],
-      belt:       ['Men\'s Genuine Leather Belt','Premium Formal Belt','Casual Reversible Belt','Classic Pin Buckle Belt','Slim Fit Leather Belt'],
-      shoes:      ['Men\'s Casual Sneakers','Comfortable Daily Wear Shoes','Stylish Loafers','Premium Leather Footwear','Trendy Sports Shoes'],
-      sandal:     ['Men\'s Daily Wear Sandals','Comfortable Rubber Slippers','Premium Leather Sandals','Casual Floaters','Everyday Flip Flops'],
-      sunglass:   ['UV Protection Sunglasses','Stylish Polarized Shades','Premium Wayfarer Sunglasses','Classic Aviator Shades','Trendy Sports Sunglasses'],
-      cap:        ['Men\'s Casual Sports Cap','Stylish Baseball Cap','Classic Cotton Cap','Trendy Snapback Cap','Premium Polo Cap'],
-      wallet:     ['Men\'s Leather Bi-Fold Wallet','Slim Card Holder Wallet','Premium RFID Wallet','Casual Zip Wallet','Classic Purse Wallet'],
-      socks:      ['Men\'s Cotton Ankle Socks','Comfortable Daily Wear Socks','Premium Sports Socks','Soft Loafer Socks (3-Pack)','Casual Multi-Colour Socks'],
-      innerwear:  ['Men\'s Cotton Brief (3-Pack)','Comfortable Trunk Innerwear','Premium Vest & Brief Combo','Soft Cotton Boxers','Daily Wear Innerwear Set'],
-      accessory:  ['Premium Stainless Bracelet','Men\'s Stylish Chain','Classic Fashion Ring','Trendy Keychain Set','Daily Wear Accessory'],
-      shirt:      ['Premium Casual Shirt','Classic Cotton Shirt','Men\'s Stylish Check Shirt','Everyday Formal Shirt','Comfortable Half-Sleeve Shirt'],
-      tshirt:     ['Men\'s Cotton Round-Neck T-Shirt','Solid Colour Polo T-Shirt','Casual Comfort T-Shirt','Premium Half-Sleeve Tee','Everyday Stretch Tee'],
-      jeans:      ['Men\'s Slim-Fit Denim Jeans','Stretchable Casual Jeans','Classic Dark-Wash Jeans','Regular Fit Comfort Jeans','Trendy Skinny Jeans'],
-      track:      ['Lycra Comfort Track Pant','Men\'s Gym Jogger Pant','Soft Sports Track Pant','Daily Wear Lycra Pant','Stretchable Athletic Jogger'],
-      kids:       ['Kids Printed Cotton T-Shirt','Boys Casual Shirt','Girls Frock & Dress Set','Kids Cotton Comfortable Set','Cute Kids Daily-Wear Top'],
-      dress:      ['Women\'s Casual Kurti','Ethnic Printed Dress','Comfortable Cotton Dress','Stylish Daily-Wear Dress','Festival Special Kurti'],
-      default:    ['Fashion Hub Special','Trending Style Pick','Jeswanth Premium Item','Popular Daily-Use Item','Best Seller Product']
-    };
+    var data = await response.json();
+    var text = (data.content && data.content[0] && data.content[0].text) || '';
+    // Clean up possible markdown fences
+    text = text.replace(/```json|```/g, '').trim();
+    var parsed = JSON.parse(text);
 
-    // ── Description pool ──
-    var DESC_POOL = {
-      watch:      'Stylish and accurate wristwatch designed for everyday wear. Scratch-resistant dial, comfortable strap, and a classic look that suits all occasions.',
-      belt:       'Premium quality belt crafted for durability and style. Smooth buckle, clean finish, and available in multiple sizes — perfect for formal and casual wear.',
-      shoes:      'Comfortable and stylish footwear for all-day use. Lightweight sole, breathable material, and a modern design that goes with any outfit.',
-      sandal:     'Comfortable daily-wear sandals with soft cushioned sole. Durable straps and easy slip-on design — ideal for home, outings, and casual use.',
-      sunglass:   '100% UV400 protection sunglasses with a stylish frame. Lightweight, scratch-resistant lens, and available in trending frame styles — perfect for outdoor use.',
-      cap:        'Comfortable and stylish cap for everyday wear. Adjustable strap, breathable fabric, and a classic design that suits all face shapes.',
-      wallet:     'Slim and durable wallet with multiple card slots and a clean finish. Compact design fits easily in pockets — ideal for daily use.',
-      socks:      'Soft and breathable cotton socks for all-day comfort. Strong elastic, smooth toe seam, and available in multi-colour packs for great value.',
-      innerwear:  'Premium soft cotton innerwear for all-day comfort. Stretchable waistband, breathable fabric, and a comfortable fit — trusted daily essential.',
-      accessory:  'Trendy and durable accessory that completes your look. Premium finish, comfortable to wear, and great for gifting too.',
-      shirt:      'High-quality cotton shirt designed for all-day comfort. Perfect for casual outings, office wear, and festive occasions — soft, breathable, and easy to style.',
-      tshirt:     'Soft and comfortable cotton T-shirt for everyday wear. Made with breathable fabric that keeps you cool — ideal for casual use, travel, and daily activities.',
-      jeans:      'Stretchable and stylish denim jeans with a clean modern fit. Durable fabric with comfortable stretch — great for casual outings and everyday use.',
-      track:      'Super-comfortable lycra track pant for sports, gym, and daily lounging. Soft elastic waistband, easy to move, and available in multiple colours.',
-      kids:       'Soft and safe fabric specially designed for kids\' sensitive skin. Bright colours, comfortable fit, and easy to wash — perfect for school and everyday play.',
-      dress:      'Elegant and comfortable dress perfect for festivals and everyday wear. Premium fabric with beautiful design — flattering fit for all occasions.',
-      default:    'Quality product from Jeswanth Fashion Hub, T.Nagar Chennai. Comfortable, durable, and excellent value — a trusted choice for the whole family.'
-    };
-
-    // ── Color pool ──
-    var COLOR_POOL = {
-      watch:      'Black, Brown, Silver, Gold',
-      belt:       'Black, Brown, Tan',
-      shoes:      'Black, Brown, White, Navy',
-      sandal:     'Black, Brown, Blue, Red',
-      sunglass:   'Black, Brown, Blue, Red, Silver',
-      cap:        'Black, Navy, Grey, Red, White',
-      wallet:     'Black, Brown, Tan',
-      socks:      'Black, White, Grey, Navy (Multi-Pack)',
-      innerwear:  'Black, White, Grey, Blue (Multi-Pack)',
-      accessory:  'Silver, Gold, Black',
-      shirt:      'White, Blue, Black, Navy, Grey',
-      tshirt:     'Black, White, Red, Navy, Green',
-      jeans:      'Blue, Black, Dark Grey, Navy',
-      track:      'Black, Navy, Dark Green, Maroon',
-      kids:       'Red, Yellow, Blue, Green, Pink',
-      dress:      'Red, Blue, Green, Yellow, Black',
-      default:    'Black, Blue, White, Red'
-    };
-
-    // ── Determine type ──
-    var type =
-      isWatch     ? 'watch'     :
-      isBelt      ? 'belt'      :
-      (isShoes && /sandal|slipper|chappal|floater/.test(keywords)) ? 'sandal' :
-      isShoes     ? 'shoes'     :
-      isSunglass  ? 'sunglass'  :
-      isCap       ? 'cap'       :
-      isWallet    ? 'wallet'    :
-      isSocks     ? ((/sock/.test(keywords)) ? 'socks' : 'innerwear') :
-      isAccessory ? 'accessory' :
-      isKids      ? 'kids'      :
-      isShirt     ? 'shirt'     :
-      isTshirt    ? 'tshirt'    :
-      isJeans     ? 'jeans'     :
-      isTrack     ? 'track'     :
-      isDress     ? 'dress'     :
-                    'default';
-
-    var namePool  = NAME_POOL[type]  || NAME_POOL.default;
-    var baseDesc  = DESC_POOL[type]  || DESC_POOL.default;
-    var baseColors= COLOR_POOL[type] || COLOR_POOL.default;
-
-    // Pick name consistently using hash
-    var hash = keywords.split('').reduce(function(a,c){ return a + c.charCodeAt(0); }, 0);
-    var name = namePool[hash % namePool.length];
-
-    // Enhance name with detected attributes
-    if (isCotton  && !name.includes('Cotton'))  name = '100% Cotton ' + name;
-    if (isSlim    && !name.includes('Slim'))    name = name.replace('Casual','Slim Fit');
-    if (isLeather && !name.includes('Leather')) name = name.replace('Premium','Genuine Leather');
-    if (isKids    && !name.includes('Kids'))    name = 'Kids ' + name;
-
-    // Enhance description
-    var desc = baseDesc;
-    if (isCotton)  desc = desc.replace('fabric', '100% pure cotton fabric');
-    if (isLeather) desc = desc.replace('material', 'genuine leather material');
-
-    // Inject color hint if given
-    var colors = baseColors;
-    if (colorHint) {
-      var hintColor = colorHint[0].charAt(0).toUpperCase() + colorHint[0].slice(1);
-      if (!colors.toLowerCase().includes(hintColor.toLowerCase())) colors = hintColor + ', ' + colors;
-    }
-
-    // Fill form
-    document.getElementById('prodName').value   = name;
-    document.getElementById('prodDesc').value   = desc;
-    document.getElementById('prodColors').value = colors;
+    if (parsed.name)   document.getElementById('prodName').value   = parsed.name;
+    if (parsed.desc)   document.getElementById('prodDesc').value   = parsed.desc;
+    if (parsed.colors) document.getElementById('prodColors').value = parsed.colors;
 
     status.textContent = '✓ Done! Review and edit if needed.';
     status.style.color = '#16a34a';
-    showToast('✨ Product details filled!');
-
+    showToast('✨ AI filled product details!');
   } catch(err) {
-    status.textContent = '✗ Something went wrong. Try again.';
+    status.textContent = '✗ Failed. Check your connection.';
     status.style.color = '#dc2626';
   }
 
   btn.disabled = false;
   btn.innerHTML = '<span>✨</span> Generate Name, Description & Tags';
-  setTimeout(function(){ status.style.display = 'none'; status.style.color = '#7c3aed'; }, 4000);
+  setTimeout(function() { status.style.display = 'none'; status.style.color = '#7c3aed'; }, 4000);
 }
 </script>
 </body>
