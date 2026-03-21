@@ -1521,35 +1521,36 @@ async function delProd(id) {
   showToast('Product deleted');
 }
 
-// ── Convert any Drive link/ID to working image URL ──
-// Uses lh3.googleusercontent.com format which bypasses Drive's CORS block
+// ── Convert any image link to a direct working URL ──
 function driveToImg(input) {
   input = input.trim();
-  if (!input) return input;
+  if (!input) return '';
 
-  // Already converted lh3 format — use as-is
-  if (input.includes('lh3.googleusercontent.com')) return input;
+  // Already a direct i.ibb.co image link — use as-is
+  if (input.includes('i.ibb.co')) return input;
 
-  // Extract file ID from any Drive URL format
-  var fileId = null;
-
-  // Format: /file/d/ID/view
-  var m1 = input.match(/\/file\/d\/([a-zA-Z0-9_-]{10,})/);
-  if (m1) fileId = m1[1];
-
-  // Format: id=ID (uc?export link)
-  if (!fileId) {
-    var m2 = input.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
-    if (m2) fileId = m2[1];
+  // ibb.co share page link → can't auto-convert without fetch
+  // User should use i.ibb.co links directly (we tell them in UI)
+  if (input.includes('ibb.co/') && !input.includes('i.ibb.co')) {
+    // Best effort: won't work but return as-is so user sees the issue
+    return input;
   }
 
-  // Format: bare ID only
-  if (!fileId && /^[a-zA-Z0-9_-]{25,}$/.test(input)) fileId = input;
+  // Already lh3 format
+  if (input.includes('lh3.googleusercontent.com')) return input;
 
-  // Convert to lh3 URL — works on all browsers, no CORS issues
-  if (fileId) return 'https://lh3.googleusercontent.com/d/' + fileId;
+  // Google Drive /file/d/ID/view
+  var m1 = input.match(/\/file\/d\/([a-zA-Z0-9_-]{10,})/);
+  if (m1) return 'https://lh3.googleusercontent.com/d/' + m1[1];
 
-  // Not a Drive link — return as-is (normal image URL)
+  // Google Drive uc?id=
+  var m2 = input.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
+  if (m2) return 'https://lh3.googleusercontent.com/d/' + m2[1];
+
+  // Bare Drive file ID
+  if (/^[a-zA-Z0-9_-]{25,}$/.test(input)) return 'https://lh3.googleusercontent.com/d/' + input;
+
+  // Any other URL — return as-is
   return input;
 }
 
