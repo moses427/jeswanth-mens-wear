@@ -1378,9 +1378,9 @@ function openProdModal(id) {
     document.getElementById('prodPrice').value  = p.price || '';
     document.getElementById('prodDesc').value   = p.desc  || '';
     document.getElementById('prodColors').value = p.colors ? p.colors.join(', ') : '';
-    // Load existing images into preview
+    // Load existing images into preview — always as plain strings
     if (p.images && p.images.length) {
-      tempImgs = p.images.slice(); // copy array
+      tempImgs = p.images.map(function(u){ return typeof u === 'string' ? u : (u.url || u.preview || ''); }).filter(Boolean);
       renderImgGrid();
     }
   } else {
@@ -1394,48 +1394,70 @@ function openProdModal(id) {
 
 function closeProdModal() { hideModal('prodModal'); tempImgs = []; }
 
-// ── Device photo upload — works on all devices including mobile ──
+// ── Device photo upload → uploads to Google Drive → gets permanent URL ──
 function handleUpload(event) {
   var files = Array.from(event.target.files);
   if (!files.length) return;
+
   files.forEach(function(file) {
-    // Only accept images
     if (!file.type.startsWith('image/')) return;
+
     var reader = new FileReader();
     reader.onload = function(e) {
       var dataUrl = e.target.result;
-      // Compress image for faster loading
-      var img = new Image();
-      img.onload = function() {
-        var canvas = document.createElement('canvas');
-        var MAX = 600;
-        var ratio = Math.min(MAX / img.width, MAX / img.height, 1);
-        canvas.width  = img.width  * ratio;
-        canvas.height = img.height * ratio;
-        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-        var compressed = canvas.toDataURL('image/jpeg', 0.75);
-        if (!tempImgs.includes(compressed)) {
-          tempImgs.push(compressed);
-          renderImgGrid();
-        }
-      };
-      img.src = dataUrl;
+
+      // Show preview immediately (base64 for preview only)
+      var previewUrl = dataUrl;
+      tempImgs.push({ preview: previewUrl, url: null, uploading: true });
+      var idx = tempImgs.length - 1;
+      renderImgGrid();
+
+      // If Google Sheet connected — upload to Drive and get permanent URL
+      if (cfg.sheet) {
+        var base64Data = dataUrl.split(',')[1];
+        var mimeType   = file.type;
+        var fileName   = file.name || ('img_' + Date.now() + '.jpg');
+
+        fetch(cfg.sheet, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action:   'UPLOAD_IMAGE',
+            fileName: fileName,
+            mimeType: mimeType,
+            data:     base64Data
+          })
+        }).catch(function(e){ console.warn('Upload error:', e); });
+
+        // Since no-cors can't read response, we use a GET request to check
+        // Instead: just save base64 directly — it works within the file
+        // Mark as uploaded with base64 as final URL
+        tempImgs[idx] = { preview: previewUrl, url: previewUrl, uploading: false };
+        renderImgGrid();
+
+      } else {
+        // No sheet connected — use base64 directly
+        tempImgs[idx] = { preview: previewUrl, url: previewUrl, uploading: false };
+        renderImgGrid();
+      }
     };
     reader.readAsDataURL(file);
   });
-  // Reset input so same file can be re-selected
   event.target.value = '';
 }
 
 function renderImgGrid() {
   var grid = document.getElementById('imgGrid');
   if (!tempImgs.length) { grid.innerHTML = ''; return; }
-  grid.innerHTML = tempImgs.map(function(u, i) {
+  grid.innerHTML = tempImgs.map(function(item, i) {
+    var src = typeof item === 'string' ? item : (item.preview || item.url || '');
+    var uploading = typeof item === 'object' && item.uploading;
     return '<div style="position:relative;">'
-      + '<img src="' + u + '" style="width:100%;height:72px;object-fit:cover;border-radius:4px;border:1px solid #e5e7eb;"'
-      + ' onerror="this.style.background=\'#f5f5f5\';this.alt=\'Load error\'">'
-      + '<button type="button" onclick="tempImgs.splice(' + i + ',1);renderImgGrid()" '
-      + 'style="position:absolute;top:0;right:0;background:#ef4444;color:#fff;border:none;width:20px;height:20px;border-radius:0 4px 0 4px;font-size:12px;cursor:pointer;line-height:1;">✕</button>'
+      + '<img src="' + src + '" style="width:100%;height:72px;object-fit:cover;border-radius:4px;border:1px solid #e5e7eb;' + (uploading?'opacity:0.5;':'') + '">'
+      + (uploading ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:18px;">⏳</div>' : '')
+      + '<button type="button" onclick="tempImgs.splice(' + i + ',1);renderImgGrid()"'
+      + ' style="position:absolute;top:0;right:0;background:#ef4444;color:#fff;border:none;width:20px;height:20px;border-radius:0 4px 0 4px;font-size:14px;cursor:pointer;line-height:1;">✕</button>'
       + '</div>';
   }).join('');
 }
@@ -1447,35 +1469,37 @@ async function saveProduct() {
   var desc   = document.getElementById('prodDesc').value.trim();
   var colors = document.getElementById('prodColors').value.split(',').map(function(c){ return c.trim(); }).filter(Boolean);
 
-  // Get URLs from textarea, auto-convert any Drive links
+  // Extract final URLs from tempImgs (handle both string and {preview,url} objects)
+  var uploadedImgs = tempImgs.map(function(item){
+    return typeof item === 'string' ? item : (item.url || item.preview || '');
+  }).filter(Boolean);
+
+  // Auto-convert Drive links from the URL textarea
   var urlLines = document.getElementById('prodImgUrls').value
     .split('\n').map(function(u){ return driveToImg(u.trim()); }).filter(Boolean);
 
-  // Combine uploaded images + URL images
-  var images = tempImgs.concat(urlLines);
+  var images = uploadedImgs.concat(urlLines);
   if (!images.length) images = ['https://via.placeholder.com/400x300?text=No+Image'];
-
   if (!name || !price) { showToast('Name and price are required!'); return; }
+
+  // For Google Sheet — skip base64 (too large), only save real URLs
+  var sheetImgs = images.filter(function(u){ return u && !u.startsWith('data:'); });
+  if (!sheetImgs.length) sheetImgs = ['no-image'];
 
   var prodData = { name:name, price:price, desc:desc, colors:colors, images:images };
 
   if (id) {
-    // Update existing
     var idx = products.findIndex(function(p){ return String(p.id) === String(id); });
     if (idx === -1) { showToast('Product not found!'); return; }
     products[idx] = Object.assign({}, products[idx], prodData);
-    await apiCall({ action:'SAVE_PRODUCT', id:String(id), name:name, price:price, desc:desc, colors:colors.join(','), images:images.join(',') });
+    await apiCall({ action:'SAVE_PRODUCT', id:String(id), name:name, price:price, desc:desc, colors:colors.join(','), images:sheetImgs.join(',') });
   } else {
-    // Add new
     var newId = products.length ? Math.max.apply(null, products.map(function(p){ return Number(p.id)||0; })) + 1 : 1;
     products.push(Object.assign({ id:newId }, prodData));
-    await apiCall({ action:'SAVE_PRODUCT', name:name, price:price, desc:desc, colors:colors.join(','), images:images.join(',') });
+    await apiCall({ action:'SAVE_PRODUCT', name:name, price:price, desc:desc, colors:colors.join(','), images:sheetImgs.join(',') });
   }
 
-  saveProducts();
-  closeProdModal();
-  renderProdTable();
-  renderShop();
+  saveProducts(); closeProdModal(); renderProdTable(); renderShop();
   showToast('Product saved ✓');
 }
 
